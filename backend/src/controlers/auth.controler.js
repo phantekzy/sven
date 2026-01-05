@@ -1,11 +1,11 @@
 /* Routes Control */
 
 /* Sign up */
-export function Signup(req, res) {
+export async function Signup(req, res) {
   res.send("Signup Route");
 }
 /* Login  */
-export function Login(req, res) {
+export async function Login(req, res) {
   res.send("Login Route");
 }
 /* Logout */

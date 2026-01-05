@@ -6,13 +6,13 @@ import { Login, Logout, Signup } from "../controlers/auth.controler.js";
 const router = express.Router();
 
 /* Sign up */
-router.get("/signup", Signup);
+router.post("/signup", Signup);
 
 /* Login  */
-router.get("/login", Login);
+router.post("/login", Login);
 
 /* Logout */
-router.get("/logout", Logout);
+router.post("/logout", Logout);
 
 /* Export section */
 export default router;
