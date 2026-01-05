@@ -1,14 +1,13 @@
 /* Import section */
 import mongoose from "mongoose";
-/* Connect to mongo DB */
+/* Connection to MongoDB */
 export const connectDB = async () => {
+  console.log("Attempting to connect to MongoDB...");
   try {
-    /* Connection */
     const conn = await mongoose.connect(process.env.MONGO_URI);
     console.log(`MongoDB Connected : ${conn.connection.host}`);
   } catch (error) {
-    console.log("Can not connect to MongoDB ", error);
-    /* in a failure case  */
+    console.log("Can not connect to MongoDB sven sever ", error.message);
     process.exit(1);
   }
 };

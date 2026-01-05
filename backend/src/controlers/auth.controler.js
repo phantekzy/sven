@@ -1,5 +1,4 @@
 /* Routes Control */
-
 /* Sign up */
 export async function Signup(req, res) {
   res.send("Signup Route");
