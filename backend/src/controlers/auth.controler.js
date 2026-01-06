@@ -35,7 +35,7 @@ export async function Signup(req, res) {
     const index = Math.floor(Math.random() * 100) + 1;
     const randomAvatar = `https://avatar.iran.liara.run/public/${index}.png`;
     /* New user creation */
-    const newUser = new User.create({
+    const newUser = await User.create({
       fullName,
       email,
       password,
