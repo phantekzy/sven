@@ -103,7 +103,17 @@ export async function Login(req, res) {
   }
 }
 
-/* Logout */
+/* ------ LOGOUT SECTION -------*/
 export function Logout(req, res) {
-  res.send("Logout Route");
+  try {
+    res.clearCookie("jwt", {
+      httpOnly: true,
+      sameSite: "strict",
+      secure: process.env.NODE_ENV === "production",
+    });
+    res.status(200).json({ success: true, message: "logout successfully" });
+  } catch (error) {
+    console.log("Error in logout controler", error.message);
+    res.status(500).json({ message: "Internel server Error" });
+  }
 }
