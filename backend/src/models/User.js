@@ -1,6 +1,7 @@
 /* Import section */
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
+
 /* Blueprint */
 const userSchema = new mongoose.Schema(
   {
@@ -52,6 +53,7 @@ const userSchema = new mongoose.Schema(
   },
   { timestamps: true },
 );
+
 /* Pre hook salt and hash the users password*/
 userSchema.pre("save", async function (next) {
   /* Modified condition */
@@ -64,6 +66,16 @@ userSchema.pre("save", async function (next) {
     next(error);
   }
 });
+
+/* Match password function */
+userSchema.methods.matchPassword = async function (enteredPassword) {
+  const isPasswordCorrect = await bcrypt.compare(
+    enteredPassword,
+    this.password,
+  );
+  return isPasswordCorrect;
+};
+
 /* User collection  */
 const User = mongoose.model("User", userSchema);
 /* Export section */
