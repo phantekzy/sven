@@ -131,3 +131,6 @@ export function Logout(req, res) {
     res.status(500).json({ message: "Internel server Error" });
   }
 }
+
+/* ---- ONBOARD SECTION ----- */
+export async function onboard(req, res) {}
