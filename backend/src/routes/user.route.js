@@ -4,6 +4,7 @@ import { protectRoute } from "../middleware/auth.middleware.js";
 import {
   getMyFriends,
   getrecommendedusers,
+  sendFriendRequest,
 } from "../controlers/user.controler.js";
 
 /* Router */
