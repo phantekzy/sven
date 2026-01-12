@@ -14,6 +14,8 @@ router.use(protectRoute);
 router.get("/", getrecommendedusers);
 // Get Friends
 router.get("/friends", getMyFriends);
+/* Friend requests */
+router.post("/friend-request/:id", sendFriendRequest);
 
 /* Export section */
 export default router;
