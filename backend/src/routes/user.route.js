@@ -1,6 +1,10 @@
 /* Import section */
 import express from "express";
 import { protectRoute } from "../middleware/auth.middleware.js";
+import {
+  getMyFriends,
+  getrecommendedusers,
+} from "../controlers/user.controler.js";
 
 /* Router */
 const router = express.Router();
