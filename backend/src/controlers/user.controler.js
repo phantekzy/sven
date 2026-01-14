@@ -2,7 +2,7 @@
 import FriendRequest from "../models/FriendRequest.js";
 import User from "../models/User.js";
 
-/* Recommended users  section*/
+/* Recommended users section*/
 export async function getrecommendedusers(req, res) {
   try {
     const currentUserId = req.user._id;
@@ -84,5 +84,16 @@ export async function sendFriendRequest(req, res) {
   } catch (error) {
     console.error("Error in sendFriendRequest controler", error.message);
     res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+/* Accepting friend request */
+export async function accpetFriendRequest(req, res) {
+  try {
+    // The id
+    const { id: requestId } = req.params;
+    // Find the id
+    const friendRequest = await FriendRequest.findById(requestId);
+  } catch (error) {
+    console.error(error.message);
   }
 }
