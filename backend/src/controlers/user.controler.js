@@ -102,6 +102,16 @@ export async function accpetFriendRequest(req, res) {
         .status(403)
         .json({ message: "You are not Authorized to accept this request" });
     }
+    // Accept the request
+    friendRequest.status = "accepted";
+    await friendRequest.save();
+    // Add each other to their friends lists
+    await User.findByIdAndUpdate(friendRequest.sender, {
+      $addToSet: { friends: friendRequest.recipient },
+    });
+    await User.findByIdAndUpdate(friendRequest.recipient, {
+      $addToSet: { friends: friendRequest.sender },
+    });
   } catch (error) {
     console.error(error.message);
   }
