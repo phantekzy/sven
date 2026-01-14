@@ -2,6 +2,7 @@
 import express from "express";
 import { protectRoute } from "../middleware/auth.middleware.js";
 import {
+  accpetFriendRequest,
   getMyFriends,
   getrecommendedusers,
   sendFriendRequest,
