@@ -106,13 +106,17 @@ export async function accpetFriendRequest(req, res) {
     friendRequest.status = "accepted";
     await friendRequest.save();
     // Add each other to their friends lists
-    await User.findByIdAndUpdate(friendRequest.sender, {
-      $addToSet: { friends: friendRequest.recipient },
-    });
-    await User.findByIdAndUpdate(friendRequest.recipient, {
-      $addToSet: { friends: friendRequest.sender },
-    });
+    await Promise.all([
+      User.findByIdAndUpdate(friendRequest.sender, {
+        $addToSet: { friends: friendRequest.recipient },
+      }),
+      User.findByIdAndUpdate(friendRequest.recipient, {
+        $addToSet: { friends: friendRequest.sender },
+      }),
+    ]);
+    res.status(200).json({ message: "Friend Request Accepted" });
   } catch (error) {
-    console.error(error.message);
+    console.error("Error in AcceptFriendRequest controler", error.message);
+    res.status(500).json({ message: "Internal server Error" });
   }
 }
