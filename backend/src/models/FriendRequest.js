@@ -1,5 +1,6 @@
+/* Import section */
 import mongoose from "mongoose";
-
+/* Friend Requests schema */
 const friendRequestSchema = new mongoose.Schema(
   {
     sender: {
@@ -22,7 +23,7 @@ const friendRequestSchema = new mongoose.Schema(
     timestamps: true,
   },
 );
-
+// Friend Request model
 const FriendRequest = mongoose.model("FriendRequest", friendRequestSchema);
-
+/* Export section */
 export default FriendRequest;
