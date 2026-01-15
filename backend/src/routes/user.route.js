@@ -3,6 +3,7 @@ import express from "express";
 import { protectRoute } from "../middleware/auth.middleware.js";
 import {
   accpetFriendRequest,
+  getFriendRequests,
   getMyFriends,
   getrecommendedusers,
   sendFriendRequest,
@@ -16,10 +17,12 @@ router.use(protectRoute);
 router.get("/", getrecommendedusers);
 // Get Friends
 router.get("/friends", getMyFriends);
-// Friend requests
+// Friend request
 router.post("/friend-request/:id", sendFriendRequest);
 // Accept Friend request
 router.put("/friend-request/:id/accept", accpetFriendRequest);
+// Getting friends requests
+router.get("/friend-requests", getFriendRequests);
 
 /* Export section */
 export default router;
