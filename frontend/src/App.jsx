@@ -1,14 +1,18 @@
+/* Import section */
+import { Route, Routes } from "react-router"
+// Routes 
+import HomePage from "./pages/HomePage"
+import SignUpPage from "./pages/SignUpPage"
 /* App component */
 const App = () => {
     return (
         <>
-            <button className="btn">Button</button>
-            <button className="btn btn-neutral">Neutral</button>
-            <button className="btn btn-primary">Primary</button>
-            <button className="btn btn-secondary">Secondary</button>
-            <button className="btn btn-accent">Accent</button>
-            <button className="btn btn-ghost">Ghost</button>
-            <button className="btn btn-link">Link</button>
+            <div className="h-screen" data-theme="coffee">
+                <Routes>
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/signup" element={<SignUpPage />} />
+                </Routes>
+            </div>
         </>
     )
 }
