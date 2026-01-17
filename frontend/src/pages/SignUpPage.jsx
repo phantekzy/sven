@@ -1,7 +1,7 @@
 /* Signup component */
 const SignUpPage = () => {
     return (
-        <div></div>
+        <div>Signup</div>
     )
 }
 /* Export section */

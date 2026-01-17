@@ -1,7 +1,7 @@
 /* Notifications page component */
 const NotificationsPage = () => {
     return (
-        <div></div>
+        <div>Notifications</div>
     )
 }
 /* Export section */

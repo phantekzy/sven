@@ -1,7 +1,7 @@
 /* Home page component */
 const HomePage = () => {
     return (
-        <div></div>
+        <div>Home page</div>
     )
 }
 /* Export section */

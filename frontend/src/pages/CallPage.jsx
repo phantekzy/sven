@@ -1,7 +1,7 @@
 /* Call page component */
 const CallPage = () => {
     return (
-        <div></div>
+        <div>Call page</div>
     )
 }
 /* Export section */

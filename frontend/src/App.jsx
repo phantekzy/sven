@@ -12,7 +12,7 @@ import OnboardingPage from "./pages/OnboardingPage.jsx"
 const App = () => {
     return (
         <>
-            <div className="h-screen" data-theme="coffee">
+            <div className="h-screen text-white" data-theme="coffee">
                 <Routes>
                     <Route path="/" element={<HomePage />} />
                     <Route path="/signup" element={<SignUpPage />} />

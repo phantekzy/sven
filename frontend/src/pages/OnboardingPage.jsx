@@ -1,7 +1,7 @@
 /* Onboarding page component */
 const OnboardingPage = () => {
     return (
-        <div></div>
+        <div>Onboarding</div>
     )
 }
 /* Export section */

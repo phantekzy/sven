@@ -1,7 +1,7 @@
 /* Login page component */
 const LoginPage = () => {
     return (
-        <div></div>
+        <div>Login</div>
     )
 }
 /* Export section */

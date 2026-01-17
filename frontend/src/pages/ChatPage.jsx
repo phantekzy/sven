@@ -1,7 +1,7 @@
 /* Chat page component */
 const ChatPage = () => {
     return (
-        <div></div>
+        <div>Chat page</div>
     )
 }
 /* Export section */
