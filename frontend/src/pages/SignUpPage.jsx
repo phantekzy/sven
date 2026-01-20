@@ -1,5 +1,6 @@
 import { ShipWheelIcon } from "lucide-react"
 import { useState } from "react"
+import { Link } from "react-router"
 
 /* Signup component */
 const SignUpPage = () => {
@@ -99,6 +100,14 @@ const SignUpPage = () => {
                                 </button>
 
 
+                                <div className="text-center mt-4">
+                                    <p className="text-sm">
+                                        Already have an  account ?{" "}
+                                        <Link to="/login" className="text-primary hover:underline">
+                                            Sign in
+                                        </Link>
+                                    </p>
+                                </div>
                             </div>
                         </form>
                     </div>
