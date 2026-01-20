@@ -14,7 +14,7 @@ const SignUpPage = () => {
 
     }
     return (
-        <div className="h-screen flex items-center justify-center p-4 sm:p-6 md:-p-8" data-theme="black">
+        <div className="h-screen flex items-center justify-center p-4 sm:p-6 md:-p-8" data-theme="garden">
             <div className="border border-primary/25 flex flex-col lg:flex-row w-full max-w-5xl mx-auto bg-base-100
                 rounded-xl shadow-lg overflow-hidden">
                 {/* LEFT SIDE */}
@@ -50,6 +50,21 @@ const SignUpPage = () => {
                                             required
                                         />
                                     </div>
+
+                                    <div className="form-control w-full">
+                                        <label className="label">
+                                            <span className="label-text">Email</span>
+                                        </label>
+                                        <input
+                                            type="email"
+                                            placeholder="Ferchechou@gmail.com"
+                                            className="input input-bordered w-full"
+                                            value={signupData.email}
+                                            onChange={(e) => setSignupData({ ...signupData, email: e.target.value })}
+                                            required
+                                        />
+                                    </div>
+
                                 </div>
                             </div>
                         </form>
