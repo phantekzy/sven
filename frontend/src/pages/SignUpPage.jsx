@@ -15,7 +15,7 @@ const SignUpPage = () => {
 
     }
     return (
-        <div className="h-screen flex items-center justify-center p-4 sm:p-6 md:-p-8" data-theme="garden">
+        <div className="h-screen flex items-center justify-center p-4 sm:p-6 md:-p-8" data-theme="lofi">
             <div className="border border-primary/25 flex flex-col lg:flex-row w-full max-w-5xl mx-auto bg-base-100
                 rounded-xl shadow-lg overflow-hidden">
                 {/* LEFT SIDE */}
@@ -111,7 +111,22 @@ const SignUpPage = () => {
                             </div>
                         </form>
                     </div>
+                </div>
 
+
+                {/* RIGHT SIDE */}
+                <div className="hidden lg:flex w-full lg:w-1/2 bg-primary/10 items-center justify-center">
+                    <div className="max-w-md p-8">
+                        {/* Illustration */}
+                        <div className="relative aspect-square max-w-sm mx-auto">
+                            <img src="/1.jfif" alt="Signup picture" className="w-full h-full" />
+                        </div>
+
+                        <div className="text-center space-y-3 mt-6">
+                            <h2 className="text-xl font-semibold">Master languages through the people who speak them.</h2>
+                            <p className="opacity-70">Turn every conversation into a lesson. Practice your target language with new friends and reach fluency faster together.</p>
+                        </div>
+                    </div>
                 </div>
 
             </div>
