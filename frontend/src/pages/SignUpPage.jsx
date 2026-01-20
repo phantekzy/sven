@@ -82,6 +82,16 @@ const SignUpPage = () => {
                                         </p>
                                     </div>
 
+                                    <div className="form-control">
+                                        <label className="label cursor-pointer justify-start gap-2">
+                                            <input type="checkbox" className="checkbox checkbox-sm" required />
+                                            <span className="text-xs leading-tight">
+                                                I agree to the{" "}
+                                                <span className="text-primary hover:underline">terms of service</span> and{" "}
+                                                <span className="text-primary hover:underline">privacy policy</span>
+                                            </span>
+                                        </label>
+                                    </div>
 
                                 </div>
                             </div>
