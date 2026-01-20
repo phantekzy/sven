@@ -92,8 +92,13 @@ const SignUpPage = () => {
                                             </span>
                                         </label>
                                     </div>
-
                                 </div>
+
+                                <button className="btn btn-primary w-full" type="submit">
+                                    join Sven
+                                </button>
+
+
                             </div>
                         </form>
                     </div>
