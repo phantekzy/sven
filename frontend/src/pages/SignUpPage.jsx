@@ -14,7 +14,7 @@ const SignUpPage = () => {
 
     }
     return (
-        <div className="h-screen flex items-center justify-center p-4 sm:p-6 md:-p-8" data-theme="coffee">
+        <div className="h-screen flex items-center justify-center p-4 sm:p-6 md:-p-8" data-theme="black">
             <div className="border border-primary/25 flex flex-col lg:flex-row w-full max-w-5xl mx-auto bg-base-100
                 rounded-xl shadow-lg overflow-hidden">
                 {/* LEFT SIDE */}
@@ -27,6 +27,33 @@ const SignUpPage = () => {
                             Sven
                         </span>
                     </div>
+
+                    <div className="w-full">
+                        <form onSubmit={handleSignup}>
+                            <div className="space-y-4">
+                                <div>
+                                    <h2 className="text-xl font-semibold">Create Sven Account</h2>
+                                    <p className="text-sm opacity-70">Join Sven and start learning the language you want !</p>
+                                </div>
+
+                                <div className="space-y-3">
+                                    <div className="form-control w-full">
+                                        <label className="label">
+                                            <span className="label-text">Full Name</span>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            placeholder="Ferchechou"
+                                            className="input input-bordered w-full"
+                                            value={signupData.fullName}
+                                            onChange={(e) => setSignupData({ ...signupData, fullName: e.target.value })}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
                 </div>
 
             </div>
