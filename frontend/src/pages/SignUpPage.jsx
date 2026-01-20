@@ -107,8 +107,12 @@ const SignUpPage = () => {
                                     </div>
                                 </div>
 
-                                <button className="btn btn-primary w-full" type="submit">
-                                    join Sven
+                                <button className="btn btn-primary w-full" type="submit" disabled={isPending}>
+                                    {isPending ? (
+                                        <span className="loading loading-spinner loading-sm"></span>
+                                    ) : (
+                                        "join Sven"
+                                    )}
                                 </button>
 
 
