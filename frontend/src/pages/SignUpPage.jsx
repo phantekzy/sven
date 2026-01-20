@@ -47,6 +47,7 @@ const SignUpPage = () => {
                                             className="input input-bordered w-full"
                                             value={signupData.fullName}
                                             onChange={(e) => setSignupData({ ...signupData, fullName: e.target.value })}
+                                            required
                                         />
                                     </div>
                                 </div>
