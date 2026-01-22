@@ -8,20 +8,12 @@ import CallPage from "./pages/CallPage.jsx"
 import ChatPage from "./pages/ChatPage.jsx"
 import OnboardingPage from "./pages/OnboardingPage.jsx"
 import { Toaster } from "react-hot-toast"
-import { useQuery } from "@tanstack/react-query"
-import { axiosInstance } from "./lib/axios.js"
+import useAuthUser from "./hooks/useAuthUser.js"
 import PageLoader from "./components/PageLoader.jsx"
 /* App component */
 const App = () => {
-    const { data: authData, isLoading } = useQuery({
-        queryKey: ["authUser"],
-        queryFn: async () => {
-            const res = await axiosInstance.get("/auth/me")
-            return res.data
-        },
-        retry: false,
-    })
-    const authUser = authData?.user
+    const { isLoading, authUser } = useAuthUser()
+
     if (isLoading) return <PageLoader />
     return (
         <>
