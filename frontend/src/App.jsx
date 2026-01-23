@@ -20,7 +20,11 @@ const App = () => {
         <>
             <div className="h-screen text-white" data-theme="coffee">
                 <Routes>
-                    <Route path="/" element={isAuthenticated ? <HomePage /> : <Navigate to="/login" />} />
+                    <Route path="/" element={isAuthenticated && isOnboarded ? (
+                        <HomePage />
+                    ) : (
+                        <Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />
+                    )} />
                     <Route path="/signup" element={!isAuthenticated ? <SignUpPage /> : <Navigate to="/" />} />
                     <Route path="/login" element={!isAuthenticated ? <LoginPage /> : <Navigate to="/" />} />
                     <Route path="/notifications" element={isAuthenticated ? <NotificationsPage /> : <Navigate to="/login" />} />
