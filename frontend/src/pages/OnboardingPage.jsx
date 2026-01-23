@@ -22,6 +22,10 @@ const OnboardingPage = () => {
             queryClient.invalidateQueries({ queryKey: ["authUser"] })
         }
     })
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        OnboardingMutation(formState)
+    }
     return (
         <div>Onboarding</div>
     )
