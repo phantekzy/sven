@@ -9,4 +9,7 @@ export const getAuthUser = async () => {
   return res.data;
 };
 
-export const completeOnboarding = async () => {};
+export const completeOnboarding = async (userData) => {
+  const response = await axiosInstance.post("/auth/onboarding", userData);
+  return response.data;
+};
