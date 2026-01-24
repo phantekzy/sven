@@ -3,7 +3,7 @@ import useAuthUser from "../hooks/useAuthUser"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { completeOnboarding } from "../lib/api"
 import toast from "react-hot-toast"
-import { CameraIcon, ShuffleIcon } from "lucide-react"
+import { CameraIcon, MapPinIcon, ShuffleIcon } from "lucide-react"
 import { LANGUAGES } from "../constants/index.js"
 
 const OnboardingPage = () => {
@@ -94,7 +94,7 @@ const OnboardingPage = () => {
                         </div>
                         {/* Languages section */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {/* Native language */}
+                            {/* Native language section */}
                             <div className="form-control">
                                 <label className="label">
                                     <span className="label-text">Native Language</span>
@@ -113,7 +113,7 @@ const OnboardingPage = () => {
                                     ))}
                                 </select>
                             </div>
-                            {/* Learning Languages */}
+                            {/* Learning Languages section*/}
                             <div className="form-control">
                                 <label className="label">
                                     <span className="label-text">
@@ -133,6 +133,25 @@ const OnboardingPage = () => {
                                         </option>
                                     ))}
                                 </select>
+                            </div>
+
+                        </div>
+                        {/* lcocation section */}
+                        <div className="form-control">
+                            <label className="label">
+                                <span className="label-text">Location</span>
+                            </label>
+                            <div className="relative">
+                                <MapPinIcon className="absolute top-1/2 transform -translate-y-1/2 
+                                            left-3 size-5 text-base-content opacity-70 "/>
+                                <input
+                                    type="text"
+                                    name="location"
+                                    value={formState.location}
+                                    onChange={(e) => setFormState({ ...formState, location: e.target.value })}
+                                    className="input input-bordered w-full pl-10"
+                                    placeholder="City,Country"
+                                />
                             </div>
                         </div>
                     </form>
