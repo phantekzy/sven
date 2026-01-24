@@ -21,8 +21,11 @@ const OnboardingPage = () => {
     const { mutate: OnboardingMutation, isPending } = useMutation({
         mutationFn: completeOnboarding,
         onSuccess: () => {
-            toast.success("Sven Profile updated successfully !")
+            toast.success("Profile updated successfully !")
             queryClient.invalidateQueries({ queryKey: ["authUser"] })
+        },
+        onError: (error) => {
+            toast.error(error.response.data.message)
         }
     })
     const handleSubmit = (e) => {
