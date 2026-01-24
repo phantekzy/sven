@@ -91,6 +91,15 @@ const OnboardingPage = () => {
                                 placeholder="Tell the community about yourself, your interests, the languages you love and what you’re hoping to learn together."
                             />
                         </div>
+                        {/* Languages section */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {/* Native language */}
+                            <div className="form-control">
+                                <label className="label">
+                                    <span className="label-text">Native Language</span>
+                                </label>
+                            </div>
+                        </div>
                     </form>
                 </div>
             </div >
