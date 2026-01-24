@@ -5,6 +5,7 @@ import { completeOnboarding } from "../lib/api"
 import toast from "react-hot-toast"
 import { CameraIcon, MapPinIcon, ShuffleIcon } from "lucide-react"
 import { LANGUAGES } from "../constants/index.js"
+import multiavatar from "@multiavatar/multiavatar"
 
 const OnboardingPage = () => {
     const { authUser } = useAuthUser()
@@ -30,7 +31,10 @@ const OnboardingPage = () => {
     }
 
     const handleRandomAvatar = () => {
+        const index = Math.floor(Math.random() * 100) + 1;
+        const avatarSVG = multiavatar(index.toString());
 
+        setFormState({ ...formState, profilePic: avatarSVG });
     }
     return (
         <div className="min-h-screen bg-base-100 flex items-center justify-center p-4 ">

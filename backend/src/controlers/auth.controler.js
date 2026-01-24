@@ -36,8 +36,6 @@ export async function Signup(req, res) {
     }
     /* Profile pic generator */
     const index = Math.floor(Math.random() * 100) + 1;
-    // Keep it here cause their server is not working in my country
-    // const randomAvatar = `https://avatar.iran.liara.run/public/${index}.png`;
     const avatarSVG = multiavatar(index.toString());
     /* New user creation */
     const newUser = await User.create({
