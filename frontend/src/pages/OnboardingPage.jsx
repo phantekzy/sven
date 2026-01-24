@@ -35,6 +35,43 @@ const OnboardingPage = () => {
         const avatarSVG = multiavatar(index.toString());
 
         setFormState({ ...formState, profilePic: avatarSVG });
+        const messages = [
+            // The Hype Man
+            "Looking sharp!",
+            "Ooh, I like this one!",
+            "That's a total vibe!",
+            "Fresh and clean!",
+            "Looking good today!",
+            "Suiting you perfectly!",
+            "Absolute legend status!",
+            "10/10. No notes.",
+
+            // The Humorous/Cheeky
+            "New look, who's this?",
+            "Is it getting hot in here?",
+            "Stop, you're making the other users jealous.",
+            "Fashion icon alert!",
+            "Look out world, here you come!",
+            "This one just clicked!",
+
+            // The Direct/Cool
+            "Style updated!",
+            "Looking futuristic!",
+            "Clean as a whistle.",
+            "Minimalist and classy.",
+            "Bold choice. I love it.",
+
+            // The Friendly/Supportive
+            "That one really brings out your eyes!",
+            "A perfect fit for your new journey.",
+            "You wear it well!",
+            "Looking ready to learn!",
+            "The community is going to love this look.",
+            "Stunning! Let's save that."
+        ];
+        const randomMessage = messages[Math.floor(Math.random() * messages.length)]
+        toast.dismiss()
+        toast.success(randomMessage)
     }
     return (
         <div className="min-h-screen bg-base-100 flex items-center justify-center p-4 ">
