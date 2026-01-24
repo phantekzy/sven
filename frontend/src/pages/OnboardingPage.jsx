@@ -105,9 +105,30 @@ const OnboardingPage = () => {
                                     onChange={(e) => setFormState({ ...formState, nativeLanguage: e.target.value })}
                                     className="select select-bordered w-full"
                                 >
-                                    <option value="">Select your speaking Languages</option>
+                                    <option value="">Select languages you speak</option>
                                     {LANGUAGES.map((lang) => (
                                         <option key={`native-${lang}`} value={lang.toLowerCase()}>
+                                            {lang}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            {/* Learning Languages */}
+                            <div className="form-control">
+                                <label className="label">
+                                    <span className="label-text">
+                                        Learning Language
+                                    </span>
+                                </label>
+                                <select
+                                    name="learningLanguage"
+                                    value={formState.learningLanguage}
+                                    onChange={(e) => setFormState({ ...formState, learningLanguage: e.target.value })}
+                                    className="select select-bordered w-full"
+                                >
+                                    <option value="">What language are you practicing?</option>
+                                    {LANGUAGES.map((lang) => (
+                                        <option key={`learning-${lang}`} value={lang.toLowerCase()}>
                                             {lang}
                                         </option>
                                     ))}

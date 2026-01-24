@@ -163,6 +163,7 @@ export const THEMES = [
 ];
 
 export const LANGUAGES = [
+  "Arabic",
   "English",
   "Spanish",
   "French",
@@ -173,7 +174,6 @@ export const LANGUAGES = [
   "Hindi",
   "Russian",
   "Portuguese",
-  "Arabic",
   "Italian",
   "Turkish",
   "Dutch",
