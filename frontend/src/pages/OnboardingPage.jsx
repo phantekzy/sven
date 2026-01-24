@@ -35,7 +35,7 @@ const OnboardingPage = () => {
         <div className="min-h-screen bg-base-100 flex items-center justify-center p-4 ">
             <div className="card bg-base-200 w-full max-w-3xl shadow-xl">
                 <div className="card-body p-6 sm:p-8">
-                    <h1 className="text-2xl sm:text-3xl font-bold text-center mb-6">Update your Profile</h1>
+                    <h1 className="text-2xl sm:text-3xl font-bold text-center mb-6">Introduce Yourself to the World</h1>
                     <form
                         onSubmit={handleSubmit}
                         className="space-y-6"
@@ -58,7 +58,7 @@ const OnboardingPage = () => {
                             <div className="flex items-center gap-2">
                                 <button type="button" onClick={handleRandomAvatar} className="btn btn-accent">
                                     <ShuffleIcon className="size-4 mr-2" />
-                                    Generate Your Avatar
+                                    Generate  avatar
                                 </button>
                             </div>
                         </div>
@@ -78,6 +78,19 @@ const OnboardingPage = () => {
                             />
                         </div>
 
+                        {/* Bio section */}
+                        <div className="form-control">
+                            <label className="label">
+                                <span className="label-text">Bio</span>
+                            </label>
+                            <textarea
+                                name="bio"
+                                value={formState.bio}
+                                onChange={(e) => setFormState({ ...formState, bio: e.target.value })}
+                                className="textarea textarea-bordered h-24"
+                                placeholder="Tell the community about yourself, your interests, the languages you love and what you’re hoping to learn together."
+                            />
+                        </div>
                     </form>
                 </div>
             </div >
