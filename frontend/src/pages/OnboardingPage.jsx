@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { completeOnboarding } from "../lib/api"
 import toast from "react-hot-toast"
 import { CameraIcon, ShuffleIcon } from "lucide-react"
+import { LANGUAGES } from "../constants/index.js"
 
 const OnboardingPage = () => {
     const { authUser } = useAuthUser()
@@ -98,6 +99,19 @@ const OnboardingPage = () => {
                                 <label className="label">
                                     <span className="label-text">Native Language</span>
                                 </label>
+                                <select
+                                    name="nativeLanguage"
+                                    value={formState.nativeLanguage}
+                                    onChange={(e) => setFormState({ ...formState, nativeLanguage: e.target.value })}
+                                    className="select select-bordered w-full"
+                                >
+                                    <option value="">Select your speaking Languages</option>
+                                    {LANGUAGES.map((lang) => (
+                                        <option key={`native-${lang}`} value={lang.toLowerCase()}>
+                                            {lang}
+                                        </option>
+                                    ))}
+                                </select>
                             </div>
                         </div>
                     </form>
