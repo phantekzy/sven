@@ -40,9 +40,9 @@ const OnboardingPage = () => {
                         onSubmit={handleSubmit}
                         className="space-y-6"
                     >
-                        {/* Profile picture section */}
                         <div className="flex flex-col items-center justify-center space-y-4">
                             <div className="size-32 rounded-full bg-base-300 overflow-hidden">
+                                {/* Profile picture section */}
                                 {formState.profilePic ? (
                                     < div
                                         className="w-32 h-32 rounded-full overflow-hidden border-2 border-primary"
@@ -61,12 +61,27 @@ const OnboardingPage = () => {
                                     Generate Your Avatar
                                 </button>
                             </div>
-
                         </div>
+
+                        {/* Full name section */}
+                        <div className="form-control">
+                            <label className="label">
+                                <span className="label-text">Full name</span>
+                            </label>
+                            <input
+                                type="text"
+                                name="fullName"
+                                value={formState.fullName}
+                                onChange={(e) => setFormState({ ...formState, fullName: e.target.value })}
+                                className="input input-bordered w-full"
+                                placeholder="Full Name"
+                            />
+                        </div>
+
                     </form>
                 </div>
-            </div>
-        </div>
+            </div >
+        </div >
     )
 }
 export default OnboardingPage
