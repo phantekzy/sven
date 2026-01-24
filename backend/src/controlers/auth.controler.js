@@ -1,4 +1,5 @@
 /* Import section */
+import multiavatar from "@multiavatar/multiavatar";
 import { upsertStreamUser } from "../lib/stream.js";
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
@@ -35,13 +36,15 @@ export async function Signup(req, res) {
     }
     /* Profile pic generator */
     const index = Math.floor(Math.random() * 100) + 1;
-    const randomAvatar = `https://avatar.iran.liara.run/public/${index}.png`;
+    // Keep it here cause their server is not working in my country
+    // const randomAvatar = `https://avatar.iran.liara.run/public/${index}.png`;
+    const avatarSVG = multiavatar(index.toString());
     /* New user creation */
     const newUser = await User.create({
       fullName,
       email,
       password,
-      profilePic: randomAvatar,
+      profilePic: avatarSVG,
     });
 
     /* Create Stream user */
