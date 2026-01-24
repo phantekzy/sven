@@ -154,6 +154,17 @@ const OnboardingPage = () => {
                                 />
                             </div>
                         </div>
+                        {/* Button */}
+                        <button className="btn btn-primary w-full" disabled={isPending} type="submit">
+                            {isPending ? (
+                                <>
+                                    <span className="loading loading-spinner"></span>
+                                    Updating Profile...
+                                </>
+                            ) : (
+                                "Complete My Profile"
+                            )}
+                        </button>
                     </form>
                 </div>
             </div >
