@@ -13,6 +13,10 @@ const LoginPage = () => {
         mutationFn: login,
         onSuccess: () => queryClient.invalidateQueries({ queryKey: ["authUser"] })
     })
+    const handleLogin = (e) => {
+        e.preventDefault()
+        loginMutation(loginData)
+    }
     return (
         <div>Login</div>
     )
