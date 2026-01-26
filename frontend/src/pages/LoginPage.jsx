@@ -60,6 +60,20 @@ const LoginPage = () => {
                                         onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
                                         required
                                     />
+                                </div>
+
+                                <div className="form-control w-full space-y-2">
+                                    <label className="label">
+                                        <span className="label-text">Password</span>
+                                    </label>
+                                    <input
+                                        type="password"
+                                        placeholder="***********"
+                                        className="input input-bordered w-full"
+                                        value={loginData.password}
+                                        onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
+                                        required
+                                    />
 
                                 </div>
                             </div>
