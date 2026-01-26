@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { login } from "../lib/api"
 import { ShipWheelIcon } from "lucide-react"
+import { Link } from "react-router"
 
 /* Login page component */
 const LoginPage = () => {
@@ -19,7 +20,7 @@ const LoginPage = () => {
         loginMutation(loginData)
     }
     return (
-        <div className="h-screen flex items-center justify-center p-4 sm:p-6 md:p-8 " data-theme="winter">
+        <div className="h-screen flex items-center justify-center p-4 sm:p-6 md:p-8 " data-theme="business">
             <div className="border border-primary/25 flex flex-col lg:flex-row w-full max-w-5xl mx-auto bg-base-100 rounded-xl shadow-lg overflow-hidden">
                 {/* Login form section */}
                 <div className="w-full lg:w-1/2 p-4 sm:p-8 flex flex-col">
@@ -86,6 +87,15 @@ const LoginPage = () => {
                                         "Sign In"
                                     )}
                                 </button>
+
+                                <div className="text-center mt-4">
+                                    <p className="text-sm opacity-80">
+                                        Don't have an account?{" "}
+                                        <Link to="/signup" className="text-primary hover:underline font-medium">
+                                            Create Sven account
+                                        </Link>
+                                    </p>
+                                </div>
                             </div>
                         </form>
                     </div>
