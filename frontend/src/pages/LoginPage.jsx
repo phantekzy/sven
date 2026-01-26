@@ -37,6 +37,21 @@ const LoginPage = () => {
                             <span>{error.response.data.message}</span>
                         </div>
                     )}
+
+                    <div className="w-full ">
+                        <form onSubmit={handleLogin}>
+                            <div className="space-y-4">
+                                <div>
+                                    <h2 className="text-xl font-semibold">Navigate Your Learning with Sven</h2>
+                                    <p className="text-sm opacity-70">Ready for your next session? Log in to Sven and bridge the gap between practicing and speaking with people worldwide.</p>
+                                </div>
+                            </div>
+
+                            <div className="flex flex-col gap-3">
+
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
