@@ -1,8 +1,8 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { EyeIcon, EyeOffIcon, ShipWheelIcon } from "lucide-react"
 import { useState } from "react"
 import { Link } from "react-router"
-import { signup } from "../lib/api"
+import useSignup from "../hooks/useSignup"
+
 
 /* Signup component */
 const SignUpPage = () => {
@@ -12,12 +12,8 @@ const SignUpPage = () => {
         email: "",
         password: "",
     })
-    const queryClient = useQueryClient()
 
-    const { mutate: signupMutation, isPending, error } = useMutation({
-        mutationFn: signup,
-        onSuccess: () => queryClient.invalidateQueries({ queryKey: ["authUser"] })
-    })
+    const { isPending, error, signupMutation } = useSignup()
 
     const handleSignup = (e) => {
         e.preventDefault()
@@ -41,7 +37,7 @@ const SignUpPage = () => {
                     {/* ERROR MESSAGE */}
                     {error && (
                         <div className="alert alert-error mb-4">
-                            <span>{error.response.data.message}</span>
+                            <span>{error.response.data.message || "Something went wrong"}</span>
                         </div>
                     )}
                     <div className="w-full">
@@ -148,7 +144,7 @@ const SignUpPage = () => {
                     <div className="max-w-md p-8">
                         {/* Illustration */}
                         <div className="relative aspect-square max-w-sm mx-auto">
-                            <img src="/2.jfif" alt="Signup picture" className="w-full h-full" />
+                            <img src="/2.jfif" alt="Signup picture" className="w-full h-full object-cover rounded-lg shadow-2xl" />
                         </div>
 
                         <div className="text-center space-y-3 mt-6">
