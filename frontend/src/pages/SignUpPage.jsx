@@ -136,7 +136,7 @@ const SignUpPage = () => {
                     <div className="max-w-md p-8">
                         {/* Illustration */}
                         <div className="relative aspect-square max-w-sm mx-auto">
-                            <img src="/1.jfif" alt="Signup picture" className="w-full h-full" />
+                            <img src="/2.jfif" alt="Signup picture" className="w-full h-full" />
                         </div>
 
                         <div className="text-center space-y-3 mt-6">

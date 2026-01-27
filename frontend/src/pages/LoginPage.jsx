@@ -84,7 +84,7 @@ const LoginPage = () => {
                                             Signing in...
                                         </>
                                     ) : (
-                                        "Sign In"
+                                        "Login"
                                     )}
                                 </button>
 
@@ -98,6 +98,22 @@ const LoginPage = () => {
                                 </div>
                             </div>
                         </form>
+                    </div>
+                </div>
+
+                {/* Image section */}
+                <div className="hidden lg:flex w-full lg:w-1/2 bg-primary/10 items-center justify-center">
+                    <div className="max-w-md p-8">
+                        <div className="relative aspect-square max-w-sm mx-auto">
+                            <img src="/3.jfif" alt="Login image" className="w-full h-full" />
+                        </div>
+
+                        <div className="text-center space-y-3 mt-6">
+                            <h2 className="text-xl font-semibold">Real talk. Real people. Worldwide.</h2>
+                            <p className="opacity-70">
+                                Bridge the gap between learning and speaking.
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
