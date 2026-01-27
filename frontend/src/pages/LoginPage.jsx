@@ -1,6 +1,5 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { login } from "../lib/api";
+import useLogin from "../hooks/useLogin.js";
 import { ShipWheelIcon, EyeIcon, EyeOffIcon } from "lucide-react";
 import { Link } from "react-router";
 
@@ -11,12 +10,7 @@ const LoginPage = () => {
         email: "",
         password: "",
     });
-
-    const queryClient = useQueryClient();
-    const { mutate: loginMutation, isPending, error } = useMutation({
-        mutationFn: login,
-        onSuccess: () => queryClient.invalidateQueries({ queryKey: ["authUser"] })
-    });
+    const { isPending, error, loginMutation } = useLogin()
 
     const handleLogin = (e) => {
         e.preventDefault();
@@ -84,7 +78,7 @@ const LoginPage = () => {
                                         <button
                                             type="button"
                                             onClick={() => setShowPassword(!showPassword)}
-                                            className="absolute inset-y-0 right-0 pr-3 flex items-center text-base-content/50 hover:text-primary"
+                                            className="absolute inset-y-0 right-0 pr-3 flex items-center text-base-content/50 hover:text-primary transition-colors"
                                         >
                                             {showPassword ? <EyeOffIcon size={20} /> : <EyeIcon size={20} />}
                                         </button>
