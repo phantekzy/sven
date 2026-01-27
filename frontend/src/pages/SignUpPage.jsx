@@ -1,11 +1,12 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { ShipWheelIcon } from "lucide-react"
+import { EyeIcon, EyeOffIcon, ShipWheelIcon } from "lucide-react"
 import { useState } from "react"
 import { Link } from "react-router"
 import { signup } from "../lib/api"
 
 /* Signup component */
 const SignUpPage = () => {
+    const [showPassword, setShowPassword] = useState(false);
     const [signupData, setSignupData] = useState({
         fullName: "",
         email: "",
@@ -84,14 +85,25 @@ const SignUpPage = () => {
                                         <label className="label">
                                             <span className="label-text">Password</span>
                                         </label>
-                                        <input
-                                            type="password"
-                                            placeholder="Sven Password"
-                                            className="input input-bordered w-full"
-                                            value={signupData.password}
-                                            onChange={(e) => setSignupData({ ...signupData, password: e.target.value })}
-                                            required
-                                        />
+
+                                        <div className="relative flex items-center">
+                                            <input
+                                                type={showPassword ? "text" : "password"}
+                                                placeholder="Sven Password"
+                                                className="input input-bordered w-full pr-12"
+                                                value={signupData.password}
+                                                onChange={(e) => setSignupData({ ...signupData, password: e.target.value })}
+                                                required
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowPassword(!showPassword)}
+                                                className="absolute inset-y-0 right-0 pr-3 flex items-center text-base-content/50 hover:text-primary transition-colors"
+                                            >
+                                                {showPassword ? <EyeOffIcon size={20} /> : <EyeIcon size={20} />}
+                                            </button>
+                                        </div>
+
                                         <p className="text-xs opacity-70 mt-1">
                                             Password must be at least 6 characters long
                                         </p>
