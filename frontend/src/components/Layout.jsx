@@ -1,7 +1,13 @@
-const Layout = () => {
-    return (
-        <div></div>
-    )
-}
+import Sidebar from "./Sidebar";
 
-export default Layout
+const Layout = ({showSidebar=false}) => {
+  return (
+    <div className="min-h-screen">
+      <div className="flex">
+        {showSidebar && <Sidebar />}
+      </div>
+    </div>
+  );
+};
+
+export default Layout;
