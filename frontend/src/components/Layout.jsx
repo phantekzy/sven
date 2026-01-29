@@ -1,10 +1,17 @@
+import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 
-const Layout = ({showSidebar=false}) => {
+const Layout = ({ children ,showSidebar = false }) => {
   return (
     <div className="min-h-screen">
       <div className="flex">
         {showSidebar && <Sidebar />}
+        <div className="flex-1 flex flex-col">
+          <Navbar/>
+          <main>
+              {children}
+          </main>
+        </div>
       </div>
     </div>
   );
