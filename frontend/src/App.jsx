@@ -19,10 +19,10 @@ const App = () => {
     if (isLoading) return <PageLoader />
     return (
         <>
-            <div className="h-screen text-white" data-theme="business">
+            <div className="h-screen text-white" data-theme="night">
                 <Routes>
                     <Route path="/" element={isAuthenticated && isOnboarded ? (
-                        <Layout showSidebar={true}>
+                        <Layout showSidebar>
                             <HomePage />
 
                         </Layout>

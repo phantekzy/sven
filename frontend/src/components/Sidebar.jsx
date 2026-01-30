@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router";
 import useAuthUser from "../hooks/useAuthUser";
-import { ShipWheelIcon } from "lucide-react";
+import { Home, HomeIcon, ShipWheelIcon } from "lucide-react";
 
 const Sidebar = () => {
   const { authUser } = useAuthUser();
@@ -23,6 +23,17 @@ const Sidebar = () => {
           </span>
         </Link>
       </div>
+      <nav className="flex-1 p-4 space-y-1">
+        <Link
+          to="/"
+          className={`btn btn-ghost justify-start w-full gap-3 px-3 normal-case ${
+            currentPath === "/" ? "btn-accent" : ""
+          }`}
+        >
+          <HomeIcon className="size-5 text-base-content opacity-70" />
+          <span>Home</span>
+        </Link>
+      </nav>
     </aside>
   );
 };
