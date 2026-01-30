@@ -12,7 +12,7 @@ const Sidebar = () => {
   const { authUser } = useAuthUser();
   const location = useLocation();
   const currentPath = location.pathname;
-
+  console.log(authUser);
   return (
     <aside
       className="w-64 bg-base-200 border-r border-x-base-300 hidden lg:flex flex-col h-screen sticky
@@ -61,6 +61,26 @@ const Sidebar = () => {
           <span>Notifications</span>
         </Link>
       </nav>
+      {/* User profile section */}
+      <div className="p-4 border-t border-base-300 mt-auto ">
+        <div className="flex items-center gap-3">
+          <div className="avatar">
+            <div className="w-10 rounded-full">
+              <div
+                className="w-10 rounded-full bg-base-300"
+                dangerouslySetInnerHTML={{ __html: authUser?.profilePic }}
+              />
+            </div>
+          </div>
+          <div className="flex-1">
+            <p className="font-semibold text-sm">{authUser?.fullName}</p>
+            <p className="text-xs text-success flex items-center gap-1.5">
+              <span className="size-2 rounded-full bg-success"></span>
+              Online
+            </p>
+          </div>
+        </div>
+      </div>
     </aside>
   );
 };
