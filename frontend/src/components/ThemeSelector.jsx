@@ -1,10 +1,5 @@
-
 const ThemeSelector = () => {
-  return (
-    <div>
-      
-    </div>
-  )
-}
+  return <div></div>;
+};
 
-export default ThemeSelector
+export default ThemeSelector;

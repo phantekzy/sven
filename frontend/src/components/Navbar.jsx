@@ -47,14 +47,18 @@ const Navbar = () => {
 
           {/* Profile picture */}
           <div className="avatar">
-            <div className="w-9 rounded-full">
+            <div className="w-7 rounded-full">
               <div
-                className="w-10 rounded-full bg-base-300"
+                className="w-8 rounded-full bg-base-300"
                 dangerouslySetInnerHTML={{ __html: authUser?.profilePic }}
               />
             </div>
           </div>
 
+          {/* Logout section */}
+          <div className="btn btn-ghost btn-circle" onClick={logoutMutation}>
+            <LogOutIcon className="h-6 w-6 text-base-content opacity-70" />
+          </div>
         </div>
       </div>
     </nav>
