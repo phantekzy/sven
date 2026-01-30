@@ -2,7 +2,7 @@ import { Link, useLocation } from "react-router";
 import useAuthUser from "../hooks/useAuthUser";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { logout } from "../lib/api";
-import { ShipWheelIcon } from "lucide-react";
+import { BellIcon, ShipWheelIcon } from "lucide-react";
 
 const Navbar = () => {
   const { authUser } = useAuthUser();
@@ -24,12 +24,23 @@ const Navbar = () => {
             <div className="pl-5">
               <Link to="/" className="flex items-center gap-2.5">
                 <ShipWheelIcon className="size-9 text-primary" />
-                <span className="text-3xl font-bold font-mono bg-clip-text text-transparent bg-gradient-to-tr from-primary to-secondary tracking-wider">
+                <span
+                  className="text-3xl font-bold font-mono bg-clip-text text-transparent bg-gradient-to-tr 
+                from-primary to-secondary tracking-wider"
+                >
                   Sven
                 </span>
               </Link>
             </div>
           )}
+
+          <div className="flex items-center gap-3 sm:gap-4">
+            <Link to={"/notifications"}>
+              <button className="btn btn-ghost btn-circle">
+                <BellIcon className="h-6 w-6 text-base-content opacity-70" />
+              </button>
+            </Link>
+          </div>
         </div>
       </div>
     </nav>
