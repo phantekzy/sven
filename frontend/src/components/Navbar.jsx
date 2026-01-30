@@ -3,6 +3,7 @@ import useAuthUser from "../hooks/useAuthUser";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { logout } from "../lib/api";
 import { BellIcon, ShipWheelIcon } from "lucide-react";
+import ThemeSelector from "./ThemeSelector";
 
 const Navbar = () => {
   const { authUser } = useAuthUser();
@@ -41,6 +42,8 @@ const Navbar = () => {
               </button>
             </Link>
           </div>
+            {/* Theme selection section */}
+          <ThemeSelector/>
         </div>
       </div>
     </nav>
