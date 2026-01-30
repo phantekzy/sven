@@ -1,8 +1,6 @@
 /* Home page component */
 const HomePage = () => {
-    return (
-        <div>Home page</div>
-    )
-}
+  return <div>Home page</div>;
+};
 /* Export section */
-export default HomePage
+export default HomePage;
