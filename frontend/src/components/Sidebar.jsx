@@ -1,9 +1,12 @@
-const Sidebar = () => {
-  return (
-    <div>
-      
-    </div>
-  )
-}
+import { useLocation } from "react-router";
+import useAuthUser from "../hooks/useAuthUser";
 
-export default Sidebar
+const Sidebar = () => {
+  const{authUser}=useAuthUser()
+  const location = useLocation()
+  const currentPath = location.pathname
+
+  return <div>Sidebar</div>;
+};
+
+export default Sidebar;

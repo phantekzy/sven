@@ -22,7 +22,7 @@ const App = () => {
             <div className="h-screen text-white" data-theme="business">
                 <Routes>
                     <Route path="/" element={isAuthenticated && isOnboarded ? (
-                        <Layout>
+                        <Layout showSidebar={true}>
                             <HomePage />
 
                         </Layout>
