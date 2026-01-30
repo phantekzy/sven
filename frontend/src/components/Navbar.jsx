@@ -9,7 +9,7 @@ const Navbar = () => {
   const isChatPage = location.pathname?.startsWith("/chat");
 
   const queryClient = useQueryClient();
-  useMutation({
+  const { mutate: logoutMutation } = useMutation({
     mutationFn: logout,
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["authUser"] }),
   });
