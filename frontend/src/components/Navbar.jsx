@@ -2,7 +2,7 @@ import { Link, useLocation } from "react-router";
 import useAuthUser from "../hooks/useAuthUser";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { logout } from "../lib/api";
-import { BellIcon, ShipWheelIcon } from "lucide-react";
+import { BellIcon, LogOutIcon, ShipWheelIcon } from "lucide-react";
 import ThemeSelector from "./ThemeSelector";
 
 const Navbar = () => {
@@ -42,8 +42,19 @@ const Navbar = () => {
               </button>
             </Link>
           </div>
-            {/* Theme selection section */}
-          <ThemeSelector/>
+          {/* Theme selection section */}
+          <ThemeSelector />
+
+          {/* Profile picture */}
+          <div className="avatar">
+            <div className="w-9 rounded-full">
+              <div
+                className="w-10 rounded-full bg-base-300"
+                dangerouslySetInnerHTML={{ __html: authUser?.profilePic }}
+              />
+            </div>
+          </div>
+
         </div>
       </div>
     </nav>
