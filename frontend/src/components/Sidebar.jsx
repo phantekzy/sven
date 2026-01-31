@@ -38,7 +38,7 @@ const Sidebar = () => {
           }`}
         >
           <HomeIcon className="size-5 text-base-content opacity-70" />
-          <span>Home</span>
+          <span className="text-base-content">Home</span>
         </Link>
         {/* Friends */}
         <Link
@@ -48,7 +48,7 @@ const Sidebar = () => {
           }`}
         >
           <UserIcon className="size-5 text-base-content opacity-70" />
-          <span>Friends</span>
+          <span className="text-base-content">Friends</span>
         </Link>
         {/* Notifications */}
         <Link
@@ -58,7 +58,7 @@ const Sidebar = () => {
           }`}
         >
           <BellIcon className="size-5 text-base-content opacity-70" />
-          <span>Notifications</span>
+          <span className="text-base-content">Notifications</span>
         </Link>
       </nav>
       {/* User profile section */}
@@ -73,7 +73,9 @@ const Sidebar = () => {
             </div>
           </div>
           <div className="flex-1">
-            <p className="font-semibold text-sm">{authUser?.fullName}</p>
+            <p className="font-semibold text-base-content text-sm">
+              {authUser?.fullName}
+            </p>
             <p className="text-xs text-success flex items-center gap-1.5">
               <span className="size-2 rounded-full bg-success inline-block" />
               Online

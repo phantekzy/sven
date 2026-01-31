@@ -8,7 +8,7 @@ const ThemeSelector = () => {
     <div className="dropdown dropdown-end">
       {/* Dropdwon trigger */}
       <button tabIndex={0} className="btn btn-ghost btn-circle">
-        <PaletteIcon className="size-5" />
+        <PaletteIcon className="size-5 text-base-content" />
       </button>
 
       <div
@@ -26,8 +26,10 @@ const ThemeSelector = () => {
               }`}
               onClick={() => setTheme(themeOption.name)}
             >
-              <PaletteIcon className="size-4" />
-              <span className="font-medium">{themeOption.name}</span>
+              <PaletteIcon className="size-4 text-base-content" />
+              <span className="font-medium text-base-content">
+                {themeOption.name}
+              </span>
               {/* Theme colors */}
               <div className="ml-auto flex gap-1">
                 {themeOption.colors.map((color, i) => (
