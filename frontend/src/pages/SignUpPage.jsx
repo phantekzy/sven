@@ -2,9 +2,11 @@ import { EyeIcon, EyeOffIcon, ShipWheelIcon } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router";
 import useSignup from "../hooks/useSignup";
+import { useThemeStore } from "../store/useThemeStore";
 
 /* Signup component */
 const SignUpPage = () => {
+  const { theme } = useThemeStore();
   const [showPassword, setShowPassword] = useState(false);
   const [signupData, setSignupData] = useState({
     fullName: "",
@@ -21,7 +23,7 @@ const SignUpPage = () => {
   return (
     <div
       className="h-screen flex items-center justify-center p-4 sm:p-6 md:-p-8"
-      data-theme="business"
+      data-theme={theme}
     >
       <div
         className="border border-primary/25 flex flex-col lg:flex-row w-full max-w-5xl mx-auto bg-base-100

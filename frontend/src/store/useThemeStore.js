@@ -1,6 +1,6 @@
 import {create} from "zustand"
 
-export const useTheme = create((set) => ({
+export const useThemeStore = create((set) => ({
     theme : "coffee",
     setTheme :  (theme) => set({theme})
 }))
