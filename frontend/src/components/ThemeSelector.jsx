@@ -24,7 +24,11 @@ const ThemeSelector = () => {
                   ? "bg-primary/10 text-primary"
                   : "hover:bg-base-content/5"
               }`}
-            ></button>
+              onClick={() => setTheme(themeOption.name)}
+            >
+              <PaletteIcon className="size-4" />
+              <span className="font-medium">{themeOption.name}</span>
+            </button>
           ))}
         </div>
       </div>
