@@ -1,5 +1,6 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { getRecommendedUsers, getUserFriends } from "../lib/api";
 /* Home page component */
 const HomePage = () => {
   const queryClient = useQueryClient();

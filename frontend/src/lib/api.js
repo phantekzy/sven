@@ -28,3 +28,13 @@ export const completeOnboarding = async (userData) => {
   const response = await axiosInstance.post("/auth/onboarding", userData);
   return response.data;
 };
+
+export async function getUserFriends() {
+  const response = await axiosInstance.get("/users/friends");
+  return response.data;
+}
+
+export async function getRecommendedUsers() {
+  const response = await axiosInstance.get("/users");
+  return response.data;
+}
