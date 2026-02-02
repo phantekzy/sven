@@ -18,7 +18,7 @@ const Sidebar = () => {
       className="w-64 bg-base-200 border-r border-x-base-300 hidden lg:flex flex-col h-screen sticky
   top-0"
     >
-      <div className="p-5 border-b border-base-300">
+      <div className="p-5 ">
         <Link to="/" className="flex items-center gap-2.5">
           <ShipWheelIcon className="size-9 text-primary" />
           <span
@@ -62,7 +62,7 @@ const Sidebar = () => {
         </Link>
       </nav>
       {/* User profile section */}
-      <div className="p-4 border-t border-base-300 mt-auto ">
+      <div className="p-4 mt-auto ">
         <div className="flex items-center gap-3">
           <div className="avatar">
             <div className="w-10 rounded-full">
