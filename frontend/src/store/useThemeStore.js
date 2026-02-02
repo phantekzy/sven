@@ -1,6 +1,9 @@
 import {create} from "zustand"
 
 export const useThemeStore = create((set) => ({
-    theme : "sunset",
-    setTheme :  (theme) => set({theme})
+    theme : localStorage.getItem("sven-theme") ||"sunset",
+    setTheme :  (theme) =>{ 
+        localStorage.setItem("sven-theme" , theme),
+        set({theme})
+    }
 }))
