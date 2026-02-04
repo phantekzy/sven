@@ -4,6 +4,7 @@ import {
   getOutgoingFriendReqs,
   getRecommendedUsers,
   getUserFriends,
+  sendFriendRequest,
 } from "../lib/api";
 /* Home page component */
 const HomePage = () => {
