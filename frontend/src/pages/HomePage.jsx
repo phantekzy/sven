@@ -28,7 +28,7 @@ const HomePage = () => {
     queryKey: ["outgoingFriendReqs"],
     queryFn: getOutgoingFriendReqs,
   });
-
+  // Friend requests
   const { mutate: sendRequestMutation, isPending } = useMutation({
     mutationFn: sendFriendRequest,
     onSuccess: () =>
@@ -57,6 +57,19 @@ const HomePage = () => {
             Friend Requests
           </Link>
         </div>
+        {loadingFriends ? (
+          <div className="felx justify-center py-12">
+            <span className="loading loading-spinner loading-lg" />
+          </div>
+        ) : friends.length === 0 ? (
+          <p>No friends yet !</p>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+            {friends.map((friend) => (
+              <FriendCard key={friend.id} friend={friend} />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
