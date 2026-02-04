@@ -8,6 +8,9 @@ import {
 } from "../lib/api";
 import { Link } from "react-router";
 import { UserIcon } from "lucide-react";
+import FriendCard from "../components/FriendCard";
+import NoFriendsFound from "../components/NoFriendsFound";
+
 /* Home page component */
 const HomePage = () => {
   const queryClient = useQueryClient();
@@ -58,11 +61,11 @@ const HomePage = () => {
           </Link>
         </div>
         {loadingFriends ? (
-          <div className="felx justify-center py-12">
+          <div className="flex justify-center py-12">
             <span className="loading loading-spinner loading-lg" />
           </div>
         ) : friends.length === 0 ? (
-          <p>No friends yet !</p>
+          <NoFriendsFound />
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
             {friends.map((friend) => (
