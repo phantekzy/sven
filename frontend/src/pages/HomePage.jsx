@@ -43,7 +43,15 @@ const HomePage = () => {
     }
   }, [outgoingFriendReqs]);
 
-  return <div>Home page</div>;
+  return (
+    <div className="p-4 sm:p-6 lg:p-8">
+      <div className="container mx-auto space-y-10">
+        <div className="flex flex-col sm:text-3xl font-bold tracking-tight">
+          Friends
+        </div>
+      </div>
+    </div>
+  );
 };
 /* Export section */
 export default HomePage;
