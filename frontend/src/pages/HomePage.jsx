@@ -6,6 +6,8 @@ import {
   getUserFriends,
   sendFriendRequest,
 } from "../lib/api";
+import { Link } from "react-router";
+import { UserIcon } from "lucide-react";
 /* Home page component */
 const HomePage = () => {
   const queryClient = useQueryClient();
@@ -50,6 +52,10 @@ const HomePage = () => {
           <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">
             Friends
           </h2>
+          <Link to="/notifications" className="btn btn-outline btn-sm">
+            <UserIcon className="mr-2 size-4" />
+            Friend Requests
+          </Link>
         </div>
       </div>
     </div>
