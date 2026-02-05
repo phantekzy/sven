@@ -73,6 +73,19 @@ const HomePage = () => {
             ))}
           </div>
         )}
+
+        <section>
+          <div className="mb-6 sm:mb-8">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div>
+                <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">
+                  Expand Your Circle
+                </h2>
+                <p>Find the perfect match for your learning goals</p>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
     </div>
   );
