@@ -8,7 +8,7 @@ import {
 } from "../lib/api";
 import { Link } from "react-router";
 import { MapPinIcon, UserIcon } from "lucide-react";
-import FriendCard from "../components/FriendCard";
+import FriendCard, { getLanguageFlag } from "../components/FriendCard";
 import NoFriendsFound from "../components/NoFriendsFound";
 
 /* Home page component */
@@ -110,6 +110,7 @@ const HomePage = () => {
                     key={user._id}
                     className="card bg-base-200 hover:shadow-lg transition-all duration-300"
                   >
+                    {/* Profile picture */}
                     <div className="card-body p-5 space-y-4">
                       <div className="flex items-center gap-3">
                         <div className="avatar size-16 rounded-full">
@@ -120,7 +121,7 @@ const HomePage = () => {
                             }}
                           />
                         </div>
-
+                        {/* Location */}
                         <div>
                           <h3 className="font-semibold text-lg">
                             {user.fullName}
@@ -132,6 +133,18 @@ const HomePage = () => {
                             </div>
                           )}
                         </div>
+                      </div>
+
+                      {/* Languages */}
+                      <div className="flex flex-wrap gap-1.5">
+                        <span className="badge badge-secondary">
+                          {getLanguageFlag(user.nativeLanguage)}
+                          Native : {capitialize(user.nativeLanguage)}
+                        </span>
+                        <span className="badge badge-outline">
+                          {getLanguageFlag(user.learningLanguage)}
+                          Learning : {capitialize(user.learningLanguage)}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -146,3 +159,5 @@ const HomePage = () => {
 };
 /* Export section */
 export default HomePage;
+
+const capitialize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
