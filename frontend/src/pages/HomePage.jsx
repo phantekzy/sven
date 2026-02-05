@@ -7,7 +7,7 @@ import {
   sendFriendRequest,
 } from "../lib/api";
 import { Link } from "react-router";
-import { MapPinIcon, UserIcon } from "lucide-react";
+import { CheckCircleIcon, MapPinIcon, UserIcon, UserPlusIcon } from "lucide-react";
 import FriendCard, { getLanguageFlag } from "../components/FriendCard";
 import NoFriendsFound from "../components/NoFriendsFound";
 
@@ -155,7 +155,6 @@ const HomePage = () => {
                           </span>
                         </div>
                       </div>
-
                       {/* Bio Section */}
                       {user.bio && (
                         <div className="relative">
@@ -164,6 +163,26 @@ const HomePage = () => {
                           </p>
                         </div>
                       )}
+
+                      {/* Button  */}
+                      <button className={`btn w-full mt-2 ${hasRequestBeenSent ? "btn-disabled" : "btn-primary"
+                        }`}
+                        onClick={() => sendRequestMutation(user._id)}
+                        disabled={hasRequestBeenSent || isPending}
+                      >
+                        {hasRequestBeenSent ? (
+                          <>
+                            <CheckCircleIcon className="size-4 mr-2" />
+                            Request Sent
+                          </>
+                        ) : (
+                          <>
+                            <UserPlusIcon className="size-4 mr-2" />
+                            Send Friend Request
+                          </>
+                        )}
+
+                      </button>
                     </div>
                   </div>
                 );
