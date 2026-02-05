@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getFriendsRequests } from "../lib/api";
 
 /* Notifications page component */
@@ -8,6 +8,18 @@ const NotificationsPage = () => {
     queryKey: ["friendRequests"],
     queryFn: getFriendsRequests,
   })
+
+  const { mutate: acceptRequestMutation, isPending } = useMutation({
+    mutationFn: acceptFriendRequest,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["friendRequests"] })
+    }
+  })
+
+
+
+
+
   return <div>Notifications</div>;
 };
 /* Export section */
