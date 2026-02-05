@@ -78,10 +78,10 @@ const HomePage = () => {
           <div className="mb-6 sm:mb-8">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div>
-                <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">
+                <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-primary">
                   Expand Your Circle
                 </h2>
-                <p className="opacity-70">
+                <p className="opacity-70 text-secondary mt-2">
                   Find the perfect match for your learning goals
                 </p>
               </div>
@@ -108,44 +108,62 @@ const HomePage = () => {
                 return (
                   <div
                     key={user._id}
-                    className="card bg-base-200 hover:shadow-lg transition-all duration-300"
+                    className="card bg-base-200 border border-base-300 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden"
                   >
-                    {/* Profile picture */}
-                    <div className="card-body p-5 space-y-4">
-                      <div className="flex items-center gap-3">
-                        <div className="avatar size-16 rounded-full">
-                          <div
-                            className="w-full h-full rounded-full bg-base-300"
-                            dangerouslySetInnerHTML={{
-                              __html: user?.profilePic,
-                            }}
-                          />
+                    <div className="card-body p-6 space-y-5">
+                      {/* Header Section: Avatar + Name/Location */}
+                      <div className="flex items-center gap-4">
+                        <div className="avatar">
+                          <div className="size-16 rounded-full ring-2 ring-primary/10 ring-offset-base-100 ring-offset-2 shadow-inner">
+                            <div
+                              className="w-full h-full bg-base-300"
+                              dangerouslySetInnerHTML={{
+                                __html: user?.profilePic,
+                              }}
+                            />
+                          </div>
                         </div>
-                        {/* Location */}
-                        <div>
-                          <h3 className="font-semibold text-lg">
+
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-bold text-lg text-primary truncate">
                             {user.fullName}
                           </h3>
                           {user.location && (
-                            <div className="flex items-center text-xs opacity-70 mt-1">
-                              <MapPinIcon className="size-3 mr-1" />
+                            <div className="flex items-center text-xs font-medium text-secondary/80 mt-1">
+                              <MapPinIcon className="size-3.5 mr-1" />
                               {user.location}
                             </div>
                           )}
                         </div>
                       </div>
 
-                      {/* Languages */}
-                      <div className="flex flex-wrap gap-1.5">
-                        <span className="badge badge-secondary">
-                          {getLanguageFlag(user.nativeLanguage)}
-                          Native : {capitialize(user.nativeLanguage)}
-                        </span>
-                        <span className="badge badge-outline">
-                          {getLanguageFlag(user.learningLanguage)}
-                          Learning : {capitialize(user.learningLanguage)}
-                        </span>
+                      {/* Languages Section */}
+                      <div className="flex flex-wrap gap-2">
+                        {/* Native Language Badge */}
+                        <div className="badge h-auto py-1.5 px-3 bg-secondary/10 border-secondary/20 text-secondary gap-2 rounded-lg">
+                          <span className="text-base">{getLanguageFlag(user.nativeLanguage)}</span>
+                          <span className="text-[10px] font-bold uppercase tracking-tight">
+                            Native: {user.nativeLanguage}
+                          </span>
+                        </div>
+
+                        {/* Learning Language Badge */}
+                        <div className="badge h-auto py-1.5 px-3 bg-primary/10 border-primary/20 text-primary gap-2 rounded-lg">
+                          <span className="text-base">{getLanguageFlag(user.learningLanguage)}</span>
+                          <span className="text-[10px] font-bold uppercase tracking-tight">
+                            Learning: {user.learningLanguage}
+                          </span>
+                        </div>
                       </div>
+
+                      {/* Bio Section */}
+                      {user.bio && (
+                        <div className="relative">
+                          <p className="text-sm leading-relaxed text-base-content/70 line-clamp-2 italic">
+                            "{user.bio}"
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </div>
                 );
@@ -160,4 +178,3 @@ const HomePage = () => {
 /* Export section */
 export default HomePage;
 
-const capitialize = (str) => str.charAt(0).toUpperCase() + str.slice(1);

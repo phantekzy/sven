@@ -41,9 +41,9 @@ const Navbar = () => {
 
           {/* Profile picture */}
           <div className="avatar">
-            <div className="w-7 rounded-full">
+            <div className="w-8 h-8 rounded-full">
               <div
-                className="w-8 rounded-full bg-base-300"
+                className="w-full h-full rounded-full bg-base-300 flex items-center justify-center"
                 dangerouslySetInnerHTML={{ __html: authUser?.profilePic }}
               />
             </div>
