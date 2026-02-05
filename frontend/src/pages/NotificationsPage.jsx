@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getFriendsRequests } from "../lib/api";
+import { acceptFriendRequest, getFriendsRequests } from "../lib/api";
 
 /* Notifications page component */
 const NotificationsPage = () => {
