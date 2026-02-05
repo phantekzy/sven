@@ -196,4 +196,3 @@ const HomePage = () => {
 };
 /* Export section */
 export default HomePage;
-
