@@ -1,4 +1,5 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { getFriendsRequests } from "../lib/api";
 
 /* Notifications page component */
 const NotificationsPage = () => {
