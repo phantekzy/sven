@@ -6,7 +6,7 @@ import {
     getUserFriends,
     unfriendUser
 } from "../lib/api";
-import { UserPlusIcon, UserXIcon, UsersIcon, MessageCircleIcon } from "lucide-react";
+import { UserPlusIcon, UserXIcon, UsersIcon, MessageCircleIcon, CalendarDaysIcon } from "lucide-react";
 import { Link } from "react-router";
 
 const Friends = () => {
@@ -66,6 +66,7 @@ const Friends = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
 
+                {/* REQUESTS COLUMN */}
                 <div className="lg:col-span-4 space-y-5">
                     <div className="flex items-center justify-between px-2">
                         <h2 className="text-sm font-bold uppercase tracking-widest text-primary">
@@ -99,7 +100,7 @@ const Friends = () => {
                                     <div className="flex gap-2">
                                         <button
                                             onClick={() => rejectReq(req._id)}
-                                            className="btn btn-ghost btn-sm flex-1 rounded-xl border border-base-300"
+                                            className="btn btn-ghost btn-sm flex-1 text-secondarycontent rounded-xl border border-base-300"
                                         >
                                             Ignore
                                         </button>
@@ -116,6 +117,7 @@ const Friends = () => {
                     </div>
                 </div>
 
+                {/* FRIENDS COLUMN */}
                 <div className="lg:col-span-8 space-y-5">
                     <div className="flex items-center justify-between px-2">
                         <h2 className="text-sm font-bold uppercase tracking-widest text-base-content/50">
@@ -149,9 +151,17 @@ const Friends = () => {
                                         </div>
                                         <div>
                                             <p className="font-black text-lg text-base-content">{friend.fullName}</p>
-                                            <div className="flex items-center gap-1.5 mt-1">
-                                                <span className="size-2 rounded-full bg-success animate-pulse"></span>
-                                                <p className="text-[10px] font-bold uppercase opacity-40">Connected</p>
+
+                                            {/* UPDATED: Full Date Format */}
+                                            <div className="flex items-center gap-1.5 mt-1 text-base-content/40">
+                                                <CalendarDaysIcon className="size-3" />
+                                                <p className="text-[10px] font-bold uppercase tracking-tight">
+                                                    Friends since {new Date(friend.createdAt || Date.now()).toLocaleDateString('en-US', {
+                                                        month: 'short',
+                                                        day: 'numeric',
+                                                        year: 'numeric'
+                                                    })}
+                                                </p>
                                             </div>
                                         </div>
                                     </div>

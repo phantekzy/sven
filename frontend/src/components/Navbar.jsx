@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router";
 import useAuthUser from "../hooks/useAuthUser";
-import { BellIcon, LogOutIcon, ShipWheelIcon, CheckIcon, Trash2Icon, PartyPopperIcon, XIcon } from "lucide-react";
+import { BellIcon, LogOutIcon, ShipWheelIcon, PartyPopperIcon, XIcon } from "lucide-react";
 import ThemeSelector from "./ThemeSelector";
 import useLogout from "../hooks/useLogout";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -24,10 +24,7 @@ const Navbar = () => {
   const closeMenus = () => {
     const drawer = document.getElementById("mobile-drawer");
     if (drawer) drawer.checked = false;
-
-    if (document.activeElement instanceof HTMLElement) {
-      document.activeElement.blur();
-    }
+    if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
   };
 
   const { mutate: acceptReq } = useMutation({
@@ -60,12 +57,12 @@ const Navbar = () => {
           </div>
         ) : (
           <div className="flex flex-col">
-            {/* INCOMING */}
+            {/* INCOMING REQUESTS - SENDER IS CORRECT HERE */}
             {friendRequests?.incomingReqs?.map((req) => (
               <div key={req._id} className="p-4 hover:bg-base-200/50 transition-colors border-b border-base-200 last:border-0">
                 <div className="flex items-center gap-3 mb-3">
                   <div className="avatar">
-                    <div className="w-10 h-10 rounded-full bg-base-300"
+                    <div className="w-10 h-10 rounded-full bg-base-300 overflow-hidden"
                       dangerouslySetInnerHTML={{ __html: req.sender?.profilePic }}
                     />
                   </div>
@@ -75,28 +72,29 @@ const Navbar = () => {
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  <button onClick={() => rejectReq(req._id)} className="btn btn-ghost btn-xs flex-1 text-error border border-error/10 hover:bg-error/10">
-                    Decline
-                  </button>
-                  <button onClick={() => acceptReq(req._id)} className="btn btn-primary btn-xs flex-1 shadow-sm">
-                    Accept
-                  </button>
+                  <button onClick={() => rejectReq(req._id)} className="btn btn-ghost btn-xs flex-1 text-error border border-error/10">Decline</button>
+                  <button onClick={() => acceptReq(req._id)} className="btn btn-primary btn-xs flex-1 shadow-sm">Accept</button>
                 </div>
               </div>
             ))}
 
-            {/* ACCEPTED */}
+            {/* ACCEPTED REQUESTS - USING RECIPIENT AS YOU IDENTIFIED */}
             {friendRequests?.acceptedReqs?.map((req) => (
               <div key={req._id} className="p-4 border-b border-base-200 last:border-0 bg-gradient-to-r from-success/5 to-transparent relative overflow-hidden">
                 <div className="absolute left-0 top-0 h-full w-1 bg-success"></div>
                 <div className="flex items-center gap-3">
                   <div className="avatar">
-                    <div className="w-10 h-10 rounded-full bg-base-300 shadow-sm"
-                      dangerouslySetInnerHTML={{ __html: req.sender?.profilePic }}
-                    />
+                    <div className="w-10 h-10 rounded-full bg-base-300 shadow-sm overflow-hidden">
+                      <div
+                        className="w-full h-full"
+                        dangerouslySetInnerHTML={{ __html: req.recipient?.profilePic }}
+                      />
+                    </div>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-bold truncate text-base-content">{req.sender?.fullName}</p>
+                    <p className="text-sm font-bold truncate text-base-content">
+                      {req.recipient?.fullName}
+                    </p>
                     <div className="flex items-center gap-1.5 mt-0.5">
                       <div className="p-0.5 rounded-full bg-success/20">
                         <PartyPopperIcon className="size-3 text-success" />
@@ -124,7 +122,6 @@ const Navbar = () => {
   return (
     <div className="drawer drawer-end z-50">
       <input id="mobile-drawer" type="checkbox" className="drawer-toggle" />
-
       <div className="drawer-content flex flex-col">
         <nav className="bg-base-200 border-b border-base-300 sticky top-0 z-30 h-16 flex items-center">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -139,22 +136,11 @@ const Navbar = () => {
               )}
 
               <div className="flex items-center gap-3 sm:gap-4">
-
                 <div className="hidden sm:block dropdown dropdown-end">
-                  <div
-                    tabIndex={0}
-                    role="button"
-                    className="btn btn-ghost btn-circle relative"
-                    onMouseDown={(e) => {
-                      if (document.activeElement === e.currentTarget) {
-                        e.preventDefault();
-                        e.currentTarget.blur();
-                      }
-                    }}
-                  >
+                  <div tabIndex={0} role="button" className="btn btn-ghost btn-circle relative">
                     <BellIcon className="h-6 w-6 text-base-content opacity-70" />
                     {totalNotifications > 0 && (
-                      <span className="badge badge-primary badge-sm absolute top-1 right-1 font-bold shadow-sm">
+                      <span className="badge badge-primary badge-sm absolute top-1 right-1 font-bold">
                         {totalNotifications}
                       </span>
                     )}
@@ -164,21 +150,16 @@ const Navbar = () => {
                   </div>
                 </div>
 
-                {/* MOBILE */}
                 <label htmlFor="mobile-drawer" className="sm:hidden btn btn-ghost btn-circle relative">
                   <BellIcon className="h-6 w-6 text-base-content opacity-70" />
-                  {totalNotifications > 0 && (
-                    <span className="badge badge-primary badge-sm absolute top-1 right-1 font-bold shadow-sm">
-                      {totalNotifications}
-                    </span>
-                  )}
+                  {totalNotifications > 0 && <span className="badge badge-primary badge-sm absolute top-1 right-1 font-bold">{totalNotifications}</span>}
                 </label>
 
                 <ThemeSelector />
 
                 <div className="avatar px-2">
-                  <div className="w-8 h-8 rounded-full ring-1 ring-base-300 ring-offset-base-100 ring-offset-2">
-                    <div className="w-full h-full rounded-full bg-base-300" dangerouslySetInnerHTML={{ __html: authUser?.profilePic }} />
+                  <div className="w-8 h-8 rounded-full ring-1 ring-base-300 ring-offset-base-100 ring-offset-2 overflow-hidden">
+                    <div className="w-full h-full" dangerouslySetInnerHTML={{ __html: authUser?.profilePic }} />
                   </div>
                 </div>
 
