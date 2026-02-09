@@ -60,3 +60,25 @@ export async function acceptFriendRequest(requestId) {
   );
   return response.data;
 }
+
+//  Decline Request
+export const rejectFriendRequest = async (requestId) => {
+  const response = await axiosInstance.delete(
+    `/users/friend-request/${requestId}/decline`,
+  );
+  return response.data;
+};
+
+//  Delete Single Notification
+export const deleteNotification = async (requestId) => {
+  const response = await axiosInstance.delete(
+    `/users/notifications/${requestId}`,
+  );
+  return response.data;
+};
+
+//  Unfriend User
+export const unfriendUser = async (friendId) => {
+  const response = await axiosInstance.delete(`/users/friends/${friendId}`);
+  return response.data;
+};

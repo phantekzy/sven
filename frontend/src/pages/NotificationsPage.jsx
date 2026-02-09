@@ -1,22 +1,55 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { acceptFriendRequest, getFriendsRequests } from "../lib/api";
-import { UserCheckIcon, MapPinIcon, CheckCircleIcon, BellIcon, ClockIcon, MessageSquareIcon } from "lucide-react";
+import {
+  acceptFriendRequest,
+  rejectFriendRequest,
+  getFriendsRequests,
+  deleteNotification
+} from "../lib/api";
+import {
+  UserCheckIcon,
+  MapPinIcon,
+  CheckCircleIcon,
+  XCircleIcon,
+  BellIcon,
+  ClockIcon,
+  MessageSquareIcon,
+  XIcon
+} from "lucide-react";
 import { getLanguageFlag } from "../components/FriendCard";
 import { Link } from "react-router";
 
 /* Notifications page component */
 const NotificationsPage = () => {
   const queryClient = useQueryClient();
+
+  // Fetching friend requests and notifications
   const { data: friendRequests, isLoading } = useQuery({
     queryKey: ["friendRequests"],
     queryFn: getFriendsRequests,
   });
 
-  const { mutate: acceptRequestMutation, isPending } = useMutation({
+  // Mutation: Accept Friend Request
+  const { mutate: acceptRequestMutation, isPending: isAccepting } = useMutation({
     mutationFn: acceptFriendRequest,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["friendRequests"] });
       queryClient.invalidateQueries({ queryKey: ["friends"] });
+    },
+  });
+
+  // Mutation: Decline/Reject Friend Request
+  const { mutate: declineRequestMutation, isPending: isDeclining } = useMutation({
+    mutationFn: rejectFriendRequest,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["friendRequests"] });
+    },
+  });
+
+  // Mutation: Delete Single Notification Alert
+  const { mutate: deleteNotificationMutation, isPending: isDeleting } = useMutation({
+    mutationFn: deleteNotification,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["friendRequests"] });
     },
   });
 
@@ -83,15 +116,24 @@ const NotificationsPage = () => {
                           </div>
                         </div>
 
-                        <button
-                          className="btn btn-primary w-full mt-2"
-                          onClick={() => acceptRequestMutation(request._id)}
-                          disabled={isPending}
-                        >
-                          {isPending ? <span className="loading loading-spinner loading-xs" /> : (
-                            <><CheckCircleIcon className="size-4 mr-2" /> Accept Request</>
-                          )}
-                        </button>
+                        <div className="flex gap-2 mt-2">
+                          <button
+                            className="btn btn-outline btn-error flex-1"
+                            onClick={() => declineRequestMutation(request._id)}
+                            disabled={isAccepting || isDeclining}
+                          >
+                            <XCircleIcon className="size-4 mr-2" /> Decline
+                          </button>
+                          <button
+                            className="btn btn-primary flex-1"
+                            onClick={() => acceptRequestMutation(request._id)}
+                            disabled={isAccepting || isDeclining}
+                          >
+                            {isAccepting ? <span className="loading loading-spinner loading-xs" /> : (
+                              <><CheckCircleIcon className="size-4 mr-2" /> Accept</>
+                            )}
+                          </button>
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -136,12 +178,21 @@ const NotificationsPage = () => {
                           </div>
                         </div>
 
-                        <Link
-                          to={`/chat/${notification.recipient?._id}`}
-                          className="btn btn-ghost btn-circle btn-sm sm:btn-md"
-                        >
-                          <MessageSquareIcon className="size-5 text-primary" />
-                        </Link>
+                        <div className="flex items-center gap-2">
+                          <Link
+                            to={`/chat/${notification.recipient?._id}`}
+                            className="btn btn-ghost btn-circle btn-sm sm:btn-md"
+                          >
+                            <MessageSquareIcon className="size-5 text-primary" />
+                          </Link>
+                          <button
+                            onClick={() => deleteNotificationMutation(notification._id)}
+                            disabled={isDeleting}
+                            className="btn btn-ghost btn-circle btn-sm text-error hover:bg-error/10"
+                          >
+                            <XIcon className="size-5" />
+                          </button>
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -149,6 +200,7 @@ const NotificationsPage = () => {
               </section>
             )}
 
+            {/* EMPTY STATE */}
             {incomingRequests.length === 0 && acceptedRequests.length === 0 && (
               <div className="text-center py-20 bg-base-200 rounded-3xl border-2 border-dashed border-base-300">
                 <BellIcon className="size-12 mx-auto opacity-20 mb-4" />

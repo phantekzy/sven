@@ -159,3 +159,59 @@ export async function getOutgoingFriendReqs(req, res) {
     res.status(500).json({ message: "Internal Server Error" });
   }
 }
+// 1. Decline a Friend Request (Delete the request)
+export async function rejectFriendRequest(req, res) {
+  try {
+    const { id: requestId } = req.params;
+
+    // Find and delete the request
+    const request = await FriendRequest.findByIdAndDelete(requestId);
+
+    if (!request) {
+      return res.status(404).json({ message: "Request not found" });
+    }
+
+    res.status(200).json({ message: "Friend request declined" });
+  } catch (error) {
+    console.error("Error in rejectFriendRequest:", error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+// 2. Delete a Single Notification (Delete the accepted request doc)
+export async function deleteNotification(req, res) {
+  try {
+    const { id: requestId } = req.params;
+    await FriendRequest.findByIdAndDelete(requestId);
+    res.status(200).json({ message: "Notification deleted" });
+  } catch (error) {
+    console.error("Error in deleteNotification:", error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+// 3. Unfriend a User (Remove from both friends lists)
+export async function unfriendUser(req, res) {
+  try {
+    const { id: friendId } = req.params;
+    const myId = req.user._id;
+
+    // Remove friendId from my list, and myId from friend's list
+    await Promise.all([
+      User.findByIdAndUpdate(myId, { $pull: { friends: friendId } }),
+      User.findByIdAndUpdate(friendId, { $pull: { friends: myId } }),
+      // Delete any existing friend request doc between them to be clean
+      FriendRequest.findOneAndDelete({
+        $or: [
+          { sender: myId, recipient: friendId },
+          { sender: friendId, recipient: myId },
+        ],
+      }),
+    ]);
+
+    res.status(200).json({ message: "User unfriended successfully" });
+  } catch (error) {
+    console.error("Error in unfriendUser:", error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
