@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { acceptFriendRequest, getFriendsRequests } from "../lib/api";
-import { UserCheckIcon, MapPinIcon, CheckCircleIcon } from "lucide-react";
+import { UserCheckIcon, MapPinIcon, CheckCircleIcon, BellIcon } from "lucide-react";
 import { getLanguageFlag } from "../components/FriendCard";
 
 /* Notifications page component */
@@ -109,6 +109,16 @@ const NotificationsPage = () => {
                     </div>
                   ))}
                 </div>
+              </section>
+            )}
+
+            {/* Request accepted notifications */}
+            {acceptedRequests.length > 0 && (
+              <section className="space-y-4">
+                <h2 className="text-xl font-semibold flex items-center gap-2">
+                  <BellIcon className="h5 w-5 text-success" />
+                  New connections
+                </h2>
               </section>
             )}
           </>
