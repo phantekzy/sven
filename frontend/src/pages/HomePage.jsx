@@ -26,7 +26,7 @@ const HomePage = () => {
 
   const pendingCount = friendRequests?.incomingReqs?.length || 0;
 
-  // --- MUTATIONS ---
+  // MUTATIONS 
   const { mutate: sendRequestMutation, isPending } = useMutation({
     mutationFn: sendFriendRequest,
     onSuccess: (data, variables) => {
@@ -98,8 +98,15 @@ const HomePage = () => {
   return (
     <div className="p-4 sm:p-6 lg:p-8 pb-20">
       <div className="container mx-auto space-y-10">
-        <div className="flex justify-between items-center">
-          <h2 className="text-2xl sm:text-3xl font-bold text-primary">Friends</h2>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-base-300 pb-6">
+          <div>
+            <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-primary">
+              Your Community
+            </h1>
+            <p className="text-secondary mt-1 opacity-80">
+              Manage your connections and grow your language learning network.
+            </p>
+          </div>
           <Link to="/notifications" className="btn btn-outline btn-sm">
             <UserIcon className="size-4 mr-2" /> Friend Requests
             {pendingCount > 0 && <span className="badge badge-primary ml-2 animate-pulse">{pendingCount}</span>}
@@ -114,7 +121,16 @@ const HomePage = () => {
           )}
 
         <section>
-          <h2 className="text-2xl font-bold mb-6 text-primary">Expand Your Circle</h2>
+          <div className="mb-6">
+            <h2 className="text-2xl font-bold text-primary flex items-center gap-2">
+              <SparklesIcon className="size-6 text-secondary" />
+              Expand Your Circle
+            </h2>
+            <p className="text-sm text-secondary opacity-70 mt-1">
+              Find partners who match your learning goals.
+            </p>
+          </div>
+
           {loadingUsers ? <div className="flex justify-center py-12"><span className="loading loading-spinner loading-lg" /></div> : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {recommendedUsers.map((user) => {
@@ -132,10 +148,23 @@ const HomePage = () => {
                           {user.location && <div className="text-xs opacity-60"><MapPinIcon className="inline size-3 mr-1" />{user.location}</div>}
                         </div>
                       </div>
+
+                      {/* Bio */}
+                      <p className="text-sm mt-3 opacity-80 line-clamp-2 min-h-[2.5rem] italic">
+                        {user.bio ? `"${user.bio}"` : "Ready to practice and learn together!"}
+                      </p>
+
                       <div className="flex flex-wrap gap-2 mt-4">
-                        <div className="badge badge-secondary badge-outline text-[10px] p-3 uppercase">Native: {user.nativeLanguage}</div>
-                        <div className="badge badge-primary badge-outline text-[10px] p-3 uppercase">Learning: {user.learningLanguage}</div>
+                        <div className="badge h-auto py-1.5 px-3 bg-secondary/10 border-secondary/20 text-secondary gap-2 rounded-lg">
+                          <span className="text-base">{getLanguageFlag(user.nativeLanguage)}</span>
+                          <span className="text-[10px] font-bold uppercase tracking-tight">Native: {user.nativeLanguage}</span>
+                        </div>
+                        <div className="badge h-auto py-1.5 px-3 bg-primary/10 border-primary/20 text-primary gap-2 rounded-lg">
+                          <span className="text-base">{getLanguageFlag(user.learningLanguage)}</span>
+                          <span className="text-[10px] font-bold uppercase tracking-tight">Learning: {user.learningLanguage}</span>
+                        </div>
                       </div>
+
                       <div className="mt-6">
                         {incomingId ? (
                           <div className="flex gap-2">
