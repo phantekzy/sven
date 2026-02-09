@@ -1,28 +1,26 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { acceptFriendRequest, getFriendsRequests } from "../lib/api";
-import { UserCheckIcon } from "lucide-react";
+import { UserCheckIcon, MapPinIcon, CheckCircleIcon } from "lucide-react";
+import { getLanguageFlag } from "../components/FriendCard";
 
 /* Notifications page component */
 const NotificationsPage = () => {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   const { data: friendRequests, isLoading } = useQuery({
     queryKey: ["friendRequests"],
     queryFn: getFriendsRequests,
-  })
+  });
 
   const { mutate: acceptRequestMutation, isPending } = useMutation({
     mutationFn: acceptFriendRequest,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["friendRequests"] })
-      queryClient.invalidateQueries({ queryKey: ["friends"] })
-    }
-  })
+      queryClient.invalidateQueries({ queryKey: ["friendRequests"] });
+      queryClient.invalidateQueries({ queryKey: ["friends"] });
+    },
+  });
 
-  const incomingRequests = friendRequests?.incomingReqs || []
-  const acceptedRequests = friendRequests?.acceptedReqs || []
-
-
-
+  const incomingRequests = friendRequests?.incomingReqs || [];
+  const acceptedRequests = friendRequests?.acceptedReqs || [];
 
   return (
     <div className="p-4 sm:p-6 lg:p-8">
@@ -42,42 +40,71 @@ const NotificationsPage = () => {
                   <span className="badge badge-primary ml-2">{incomingRequests.length}</span>
                 </h2>
 
-
-                <div className="space-y-3 ">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {incomingRequests.map((request) => (
                     <div
                       key={request._id}
-                      className="card bg-base-200 shadow-sm hover:shadow-md transition-shadow"
+                      className="card bg-base-200 border border-base-300 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden"
                     >
-                      <div className="card-body p-4">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3">
-                            <div className="avatar w-14 h-14 rounded-full bg-base-300">
+                      <div className="card-body p-6 space-y-5">
+                        {/* Header Section: Avatar + Name */}
+                        <div className="flex items-center gap-4">
+                          <div className="avatar">
+                            <div className="size-16 rounded-full ring-2 ring-primary/10 ring-offset-base-100 ring-offset-2 shadow-inner">
                               <div
-                                dangerouslySetInnerHTML={{ __html: request.sender?.profilePic }}
+                                className="w-full h-full bg-base-300"
+                                dangerouslySetInnerHTML={{
+                                  __html: request.sender?.profilePic,
+                                }}
                               />
-                            </div>
-                            <div>
-                              <h3 className="font-semibold">{request.sender.fullName}</h3>
-                              <div className="flex flex-wrap gap-1.5 mt-1">
-                                <span className="badge badge-secondary uppercase badge-sm">
-                                  Native: {request.sender.nativeLanguage}
-                                </span>
-                                <span className="badge badge-outline uppercase badge-sm">
-                                  Learning: {request.sender.learningLanguage}
-                                </span>
-                              </div>
                             </div>
                           </div>
 
-                          <button
-                            className="btn btn-primary btn-sm"
-                            onClick={() => acceptRequestMutation(request._id)}
-                            disabled={isPending}
-                          >
-                            Accept
-                          </button>
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-bold text-lg text-primary truncate">
+                              {request.sender?.fullName}
+                            </h3>
+                            {request.sender?.location && (
+                              <div className="flex items-center text-xs font-medium text-secondary/80 mt-1">
+                                <MapPinIcon className="size-3.5 mr-1" />
+                                {request.sender.location}
+                              </div>
+                            )}
+                          </div>
                         </div>
+
+                        {/* Languages Section */}
+                        <div className="flex flex-wrap gap-2">
+                          <div className="badge h-auto py-1.5 px-3 bg-secondary/10 border-secondary/20 text-secondary gap-2 rounded-lg">
+                            <span className="text-base">{getLanguageFlag(request.sender?.nativeLanguage)}</span>
+                            <span className="text-[10px] font-bold uppercase tracking-tight">
+                              Native: {request.sender?.nativeLanguage}
+                            </span>
+                          </div>
+
+                          <div className="badge h-auto py-1.5 px-3 bg-primary/10 border-primary/20 text-primary gap-2 rounded-lg">
+                            <span className="text-base">{getLanguageFlag(request.sender?.learningLanguage)}</span>
+                            <span className="text-[10px] font-bold uppercase tracking-tight">
+                              Learning: {request.sender?.learningLanguage}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Action Button */}
+                        <button
+                          className="btn btn-primary w-full mt-2"
+                          onClick={() => acceptRequestMutation(request._id)}
+                          disabled={isPending}
+                        >
+                          {isPending ? (
+                            <span className="loading loading-spinner loading-xs"></span>
+                          ) : (
+                            <>
+                              <CheckCircleIcon className="size-4 mr-2" />
+                              Accept Request
+                            </>
+                          )}
+                        </button>
                       </div>
                     </div>
                   ))}
@@ -88,7 +115,7 @@ const NotificationsPage = () => {
         )}
       </div>
     </div>
-  )
+  );
 };
-/* Export section */
+
 export default NotificationsPage;
