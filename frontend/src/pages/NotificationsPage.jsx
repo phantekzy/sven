@@ -17,8 +17,8 @@ const NotificationsPage = () => {
     }
   })
 
-  const incomingRequests = friendRequests?.incomingReqs
-  const acceptedRequests = friendRequests?.acceptedReqs
+  const incomingRequests = friendRequests?.incomingReqs || []
+  const acceptedRequests = friendRequests?.acceptedReqs || []
 
 
 
