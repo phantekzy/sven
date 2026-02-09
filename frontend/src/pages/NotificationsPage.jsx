@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { acceptFriendRequest, getFriendsRequests } from "../lib/api";
+import { UserCheckIcon } from "lucide-react";
 
 /* Notifications page component */
 const NotificationsPage = () => {
@@ -33,6 +34,15 @@ const NotificationsPage = () => {
           </div>
         ) : (
           <>
+            {incomingRequests.length > 0 && (
+              <section className="space-y-4">
+                <h2 className="text-xl font-semibold flex items-center gap-2">
+                  <UserCheckIcon className="h-5 w-5 text-primary" />
+                  Friend Requests
+                  <span className="badge badge-primary ml-2">{incomingRequests.length}</span>
+                </h2>
+              </section>
+            )}
           </>
         )}
       </div>
