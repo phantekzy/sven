@@ -41,6 +41,28 @@ const NotificationsPage = () => {
                   Friend Requests
                   <span className="badge badge-primary ml-2">{incomingRequests.length}</span>
                 </h2>
+
+
+                <div className="space-y-3 ">
+                  {incomingRequests.map((request) => (
+                    <div
+                      key={request._id}
+                      className="card bg-base-200 shadow-sm hover:shadow-md transition-shadow"
+                    >
+                      <div className="card-body p-4">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="avatar w-14 h-14 rounded-full bg-base-300">
+                              <div
+                                dangerouslySetInnerHTML={{ __html: request.sender?.profilePic }}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </section>
             )}
           </>
