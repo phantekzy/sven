@@ -10,7 +10,14 @@ import {
   rejectFriendRequest,
 } from "../lib/api";
 import { Link } from "react-router";
-import { CheckCircleIcon, MapPinIcon, UserIcon, UserPlusIcon, XCircleIcon } from "lucide-react";
+import {
+  CheckCircleIcon,
+  MapPinIcon,
+  UserIcon,
+  UserPlusIcon,
+  XCircleIcon,
+  SparklesIcon
+} from "lucide-react";
 import FriendCard, { getLanguageFlag } from "../components/FriendCard";
 import NoFriendsFound from "../components/NoFriendsFound";
 
@@ -19,31 +26,28 @@ const HomePage = () => {
   const queryClient = useQueryClient();
   const [outgoingRequestsids, setOutgoingRequestsIds] = useState(new Set());
 
-  // Friends
+  // Data Fetching
   const { data: friends = [], isLoading: loadingFriends } = useQuery({
     queryKey: ["friends"],
     queryFn: getUserFriends,
   });
 
-  // Recommended users
   const { data: recommendedUsers = [], isLoading: loadingUsers } = useQuery({
     queryKey: ["users"],
     queryFn: getRecommendedUsers,
   });
 
-  // Outgoing friend Requests
   const { data: outgoingFriendReqs } = useQuery({
     queryKey: ["outgoingFriendReqs"],
     queryFn: getOutgoingFriendReqs,
   });
 
-  // Incoming friend Requests
   const { data: friendRequests } = useQuery({
     queryKey: ["friendRequests"],
     queryFn: getFriendsRequests,
   });
 
-  // --- Mutations ---
+  //  Mutations 
   const { mutate: sendRequestMutation, isPending } = useMutation({
     mutationFn: sendFriendRequest,
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["outgoingFriendReqs"] }),
@@ -63,7 +67,7 @@ const HomePage = () => {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["friendRequests"] }),
   });
 
-  // Logic to map sender IDs to Request IDs
+  // Map sender IDs to Request IDs for incoming logic
   const incomingRequestMap = useMemo(() => {
     const map = new Map();
     friendRequests?.incomingReqs?.forEach((req) => {
@@ -85,6 +89,8 @@ const HomePage = () => {
   return (
     <div className="p-4 sm:p-6 lg:p-8 pb-20">
       <div className="container mx-auto space-y-10">
+
+        {/* Friends Section */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-primary">
             Friends
@@ -109,6 +115,7 @@ const HomePage = () => {
           </div>
         )}
 
+        {/* Recommended Section */}
         <section>
           <div className="mb-6 sm:mb-8">
             <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-primary">
@@ -122,6 +129,16 @@ const HomePage = () => {
           {loadingUsers ? (
             <div className="flex justify-center py-12">
               <span className="loading loading-spinner loading-lg" />
+            </div>
+          ) : recommendedUsers.length === 0 ? (
+            <div className="card bg-base-200 border-2 border-dashed border-base-300 p-10 text-center flex flex-col items-center justify-center">
+              <div className="bg-primary/10 p-4 rounded-2xl mb-4">
+                <SparklesIcon className="size-10 text-primary animate-pulse" />
+              </div>
+              <h3 className="font-bold text-xl text-primary">All Caught Up!</h3>
+              <p className="text-base-content/60 max-w-xs mx-auto mt-2">
+                You've seen everyone available for now. Check back later for new connections!
+              </p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -151,11 +168,11 @@ const HomePage = () => {
                       <div className="flex flex-wrap gap-2">
                         <div className="badge h-auto py-1.5 px-3 bg-secondary/10 border-secondary/20 text-secondary gap-2 rounded-lg">
                           <span className="text-base">{getLanguageFlag(user.nativeLanguage)}</span>
-                          <span className="text-[10px] font-bold uppercase tracking-tight">Native: {user.nativeLanguage}</span>
+                          <span className="text-[10px] font-bold uppercase tracking-tight ml-2">Native: {user.nativeLanguage}</span>
                         </div>
                         <div className="badge h-auto py-1.5 px-3 bg-primary/10 border-primary/20 text-primary gap-2 rounded-lg">
                           <span className="text-base">{getLanguageFlag(user.learningLanguage)}</span>
-                          <span className="text-[10px] font-bold uppercase tracking-tight">Learning: {user.learningLanguage}</span>
+                          <span className="text-[10px] font-bold uppercase tracking-tight ml-2">Learning: {user.learningLanguage}</span>
                         </div>
                       </div>
 
