@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router";
 import useAuthUser from "../hooks/useAuthUser";
-import { BellIcon, LogOutIcon, ShipWheelIcon, PartyPopperIcon, XIcon } from "lucide-react";
+import { BellIcon, LogOutIcon, ShipWheelIcon, PartyPopperIcon, XIcon, HomeIcon } from "lucide-react"; // Added HomeIcon
 import ThemeSelector from "./ThemeSelector";
 import useLogout from "../hooks/useLogout";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -149,6 +149,10 @@ const Navbar = () => {
               )}
 
               <div className="flex items-center gap-3 sm:gap-4">
+                {/* HOME BUTTON */}
+                <Link to="/" className="btn btn-ghost btn-circle">
+                  <HomeIcon className="h-6 w-6 text-base-content opacity-70" />
+                </Link>
 
                 {/* DESKTOP DROPDOWN */}
                 <details
