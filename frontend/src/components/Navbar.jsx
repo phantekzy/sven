@@ -5,6 +5,7 @@ import ThemeSelector from "./ThemeSelector";
 import useLogout from "../hooks/useLogout";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getFriendsRequests, acceptFriendRequest, rejectFriendRequest } from "../lib/api";
+import { useState, useEffect, useRef } from "react";
 
 const Navbar = () => {
   const { authUser } = useAuthUser();
@@ -12,6 +13,10 @@ const Navbar = () => {
   const queryClient = useQueryClient();
   const isChatPage = location.pathname?.startsWith("/chat");
   const { logoutMutation } = useLogout();
+
+  // State for Desktop Dropdown
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
   const { data: friendRequests } = useQuery({
     queryKey: ["friendRequests"],
@@ -24,20 +29,35 @@ const Navbar = () => {
   const closeMenus = () => {
     const drawer = document.getElementById("mobile-drawer");
     if (drawer) drawer.checked = false;
-    if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
+    setIsDropdownOpen(false);
   };
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const { mutate: acceptReq } = useMutation({
     mutationFn: acceptFriendRequest,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["friendRequests"] });
       queryClient.invalidateQueries({ queryKey: ["friends"] });
+      closeMenus();
     },
   });
 
   const { mutate: rejectReq } = useMutation({
     mutationFn: rejectFriendRequest,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["friendRequests"] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["friendRequests"] });
+      closeMenus();
+    },
   });
 
   const NotificationContent = () => (
@@ -57,7 +77,6 @@ const Navbar = () => {
           </div>
         ) : (
           <div className="flex flex-col">
-            {/* INCOMING REQUESTS - SENDER IS CORRECT HERE */}
             {friendRequests?.incomingReqs?.map((req) => (
               <div key={req._id} className="p-4 hover:bg-base-200/50 transition-colors border-b border-base-200 last:border-0">
                 <div className="flex items-center gap-3 mb-3">
@@ -78,23 +97,17 @@ const Navbar = () => {
               </div>
             ))}
 
-            {/* ACCEPTED REQUESTS - USING RECIPIENT AS YOU IDENTIFIED */}
             {friendRequests?.acceptedReqs?.map((req) => (
               <div key={req._id} className="p-4 border-b border-base-200 last:border-0 bg-gradient-to-r from-success/5 to-transparent relative overflow-hidden">
                 <div className="absolute left-0 top-0 h-full w-1 bg-success"></div>
                 <div className="flex items-center gap-3">
                   <div className="avatar">
                     <div className="w-10 h-10 rounded-full bg-base-300 shadow-sm overflow-hidden">
-                      <div
-                        className="w-full h-full"
-                        dangerouslySetInnerHTML={{ __html: req.recipient?.profilePic }}
-                      />
+                      <div className="w-full h-full" dangerouslySetInnerHTML={{ __html: req.recipient?.profilePic }} />
                     </div>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-bold truncate text-base-content">
-                      {req.recipient?.fullName}
-                    </p>
+                    <p className="text-sm font-bold truncate text-base-content">{req.recipient?.fullName}</p>
                     <div className="flex items-center gap-1.5 mt-0.5">
                       <div className="p-0.5 rounded-full bg-success/20">
                         <PartyPopperIcon className="size-3 text-success" />
@@ -136,19 +149,33 @@ const Navbar = () => {
               )}
 
               <div className="flex items-center gap-3 sm:gap-4">
-                <div className="hidden sm:block dropdown dropdown-end">
-                  <div tabIndex={0} role="button" className="btn btn-ghost btn-circle relative">
-                    <BellIcon className="h-6 w-6 text-base-content opacity-70" />
-                    {totalNotifications > 0 && (
-                      <span className="badge badge-primary badge-sm absolute top-1 right-1 font-bold">
-                        {totalNotifications}
-                      </span>
-                    )}
-                  </div>
-                  <div tabIndex={0} className="dropdown-content z-[1] menu p-0 shadow-2xl bg-base-100 border border-base-300 rounded-box w-80 mt-2 overflow-hidden">
+
+                {/* DESKTOP DROPDOWN */}
+                <details
+                  ref={dropdownRef}
+                  className="hidden sm:block dropdown dropdown-end"
+                  open={isDropdownOpen}
+                >
+                  <summary
+                    className="btn btn-ghost btn-circle list-none"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setIsDropdownOpen(!isDropdownOpen);
+                    }}
+                  >
+                    <div className="relative">
+                      <BellIcon className="h-6 w-6 text-base-content opacity-70" />
+                      {totalNotifications > 0 && (
+                        <span className="badge badge-primary badge-sm absolute -top-2 -right-2 font-bold">
+                          {totalNotifications}
+                        </span>
+                      )}
+                    </div>
+                  </summary>
+                  <div className="dropdown-content z-[1] shadow-2xl bg-base-100 border border-base-300 rounded-box w-80 mt-2 overflow-hidden">
                     <NotificationContent />
                   </div>
-                </div>
+                </details>
 
                 <label htmlFor="mobile-drawer" className="sm:hidden btn btn-ghost btn-circle relative">
                   <BellIcon className="h-6 w-6 text-base-content opacity-70" />

@@ -103,7 +103,7 @@ const HomePage = () => {
             <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-primary">
               Your Community
             </h1>
-            <p className="text-secondary mt-1 opacity-80">
+            <p className="text-secondary  mt-1 opacity-80">
               Manage your connections and grow your language learning network.
             </p>
           </div>
