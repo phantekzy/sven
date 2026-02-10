@@ -1,6 +1,14 @@
-import { Link, useLocation } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import useAuthUser from "../hooks/useAuthUser";
-import { BellIcon, LogOutIcon, ShipWheelIcon, PartyPopperIcon, XIcon, HomeIcon } from "lucide-react"; // Added HomeIcon
+import {
+  BellIcon,
+  LogOutIcon,
+  ShipWheelIcon,
+  PartyPopperIcon,
+  XIcon,
+  HomeIcon,
+  ChevronLeft
+} from "lucide-react"; // Added ChevronLeft
 import ThemeSelector from "./ThemeSelector";
 import useLogout from "../hooks/useLogout";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -10,6 +18,7 @@ import { useState, useEffect, useRef } from "react";
 const Navbar = () => {
   const { authUser } = useAuthUser();
   const location = useLocation();
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const isChatPage = location.pathname?.startsWith("/chat");
   const { logoutMutation } = useLogout();
@@ -32,7 +41,6 @@ const Navbar = () => {
     setIsDropdownOpen(false);
   };
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -149,6 +157,15 @@ const Navbar = () => {
               )}
 
               <div className="flex items-center gap-3 sm:gap-4">
+                {/* BACK BUTTON */}
+                <button
+                  onClick={() => navigate(-1)}
+                  className="btn btn-ghost btn-circle"
+                  aria-label="Go back"
+                >
+                  <ChevronLeft className="h-6 w-6 text-base-content opacity-70" />
+                </button>
+
                 {/* HOME BUTTON */}
                 <Link to="/" className="btn btn-ghost btn-circle">
                   <HomeIcon className="h-6 w-6 text-base-content opacity-70" />
