@@ -7,8 +7,9 @@ import {
   PartyPopperIcon,
   XIcon,
   HomeIcon,
-  ChevronLeft
-} from "lucide-react"; // Added ChevronLeft
+  ChevronLeft,
+  UsersIcon
+} from "lucide-react";
 import ThemeSelector from "./ThemeSelector";
 import useLogout from "../hooks/useLogout";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -23,7 +24,6 @@ const Navbar = () => {
   const isChatPage = location.pathname?.startsWith("/chat");
   const { logoutMutation } = useLogout();
 
-  // State for Desktop Dropdown
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -157,18 +157,20 @@ const Navbar = () => {
               )}
 
               <div className="flex items-center gap-3 sm:gap-4">
-                {/* BACK BUTTON */}
                 <button
                   onClick={() => navigate(-1)}
                   className="btn btn-ghost btn-circle"
-                  aria-label="Go back"
                 >
                   <ChevronLeft className="h-6 w-6 text-base-content opacity-70" />
                 </button>
 
-                {/* HOME BUTTON */}
                 <Link to="/" className="btn btn-ghost btn-circle">
                   <HomeIcon className="h-6 w-6 text-base-content opacity-70" />
+                </Link>
+
+                {/* FRIENDS BUTTON */}
+                <Link to="/friends" className="btn btn-ghost btn-circle">
+                  <UsersIcon className="h-6 w-6 text-base-content opacity-70" />
                 </Link>
 
                 {/* DESKTOP DROPDOWN */}
