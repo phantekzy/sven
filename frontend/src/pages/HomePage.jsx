@@ -174,32 +174,32 @@ const HomePage = () => {
           </h1>
           <Link to="/notifications" className="relative group active:translate-y-1 transition-all">
             <div className="absolute inset-0 bg-base-300 rounded-full translate-y-2" />
-            <div className="relative bg-base-200 border-2 border-base-300 px-10 py-4 rounded-full font-black uppercase tracking-widest text-sm flex items-center gap-3">
+            <div className="relative bg-base-200 border-2 border-base-300 px-10 py-4 rounded-full font-black uppercase tracking-widest text-sm flex items-center gap-3 group-hover:-translate-y-1 transition-all">
               <UserIcon className="size-4" />
               Requests {pendingCount > 0 && <span className="badge badge-primary">{pendingCount}</span>}
             </div>
           </Link>
         </header>
 
-        {/* FRIENDS SECTION */}
-        <section className="mt-6 space-y-6">
+        {/* FRIENDS SECTION - ISOLATED STACKING CONTEXT */}
+        <section className="mt-6 relative z-20 space-y-6">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 px-1">
             <div className="flex items-center justify-between w-full">
               <h2 className="text-lg md:text-2xl font-black flex items-center gap-3 italic opacity-80">/your-squad</h2>
 
-              {/* SLIDER CONTROLS - POSITIONED RIGHT */}
-              <div className="flex gap-2">
-                <button
-                  onClick={() => scroll('left')}
-                  className="btn btn-circle btn-xs bg-base-200 border-none hover:bg-primary hover:text-white transition-all active:scale-90"
-                >
-                  <ChevronLeft size={14} />
+              {/* TACTILE SLIDER CONTROLS */}
+              <div className="flex gap-3">
+                <button onClick={() => scroll('left')} className="group relative size-10 active:translate-y-1 transition-all">
+                  <div className="absolute inset-0 bg-base-300 rounded-xl translate-y-1 group-active:translate-y-0" />
+                  <div className="relative size-full bg-base-200 border-2 border-base-300 rounded-xl flex items-center justify-center group-hover:bg-primary group-hover:border-primary group-hover:text-white transition-all group-hover:-translate-y-0.5">
+                    <ChevronLeft size={18} strokeWidth={3} />
+                  </div>
                 </button>
-                <button
-                  onClick={() => scroll('right')}
-                  className="btn btn-circle btn-xs bg-base-200 border-none hover:bg-primary hover:text-white transition-all active:scale-90"
-                >
-                  <ChevronRight size={14} />
+                <button onClick={() => scroll('right')} className="group relative size-10 active:translate-y-1 transition-all">
+                  <div className="absolute inset-0 bg-base-300 rounded-xl translate-y-1 group-active:translate-y-0" />
+                  <div className="relative size-full bg-base-200 border-2 border-base-300 rounded-xl flex items-center justify-center group-hover:bg-primary group-hover:border-primary group-hover:text-white transition-all group-hover:-translate-y-0.5">
+                    <ChevronRight size={18} strokeWidth={3} />
+                  </div>
                 </button>
               </div>
             </div>
@@ -209,47 +209,50 @@ const HomePage = () => {
               <input
                 type="text" placeholder="Filter squad..." value={friendSearchQuery}
                 onChange={(e) => setFriendSearchQuery(e.target.value)}
-                className="input input-sm w-full pl-9 bg-base-200 border-none rounded-xl font-bold"
+                className="input input-sm w-full pl-9 bg-base-200 border-none rounded-xl font-bold focus:ring-2 ring-primary/20"
               />
             </div>
           </div>
 
-          <div ref={scrollRef} className="flex gap-4 md:gap-8 overflow-x-auto pb-4 scrollbar-hide snap-x mask-fade-edges">
-            {loadingFriends ? <div className="loading loading-sm" /> :
-              filteredFriends.length === 0 ? <div className="py-4 opacity-20 text-xs font-black uppercase w-full text-center">No friends online</div> : (
-                filteredFriends.map((f) => (
-                  <div key={f._id} className="snap-start shrink-0 cursor-pointer" onClick={() => navigate(`/chat/${f._id}`)}>
-                    <div className="md:hidden flex flex-col items-center gap-1 w-20">
-                      <div className="size-16 rounded-2xl bg-base-200 border-b-4 border-base-300 p-1 overflow-hidden" dangerouslySetInnerHTML={{ __html: f.profilePic }} />
-                      <span className="text-[10px] font-black truncate w-full text-center uppercase opacity-60">{f.fullName.split(' ')[0]}</span>
+          {/* WRAPPER FOR VERTICAL BUFFER AND OVERFLOW STABILITY */}
+          <div className="relative overflow-visible px-1">
+            <div ref={scrollRef} className="flex gap-4 md:gap-8 overflow-x-auto py-8 scrollbar-hide snap-x mask-fade-edges">
+              {loadingFriends ? <div className="loading loading-sm" /> :
+                filteredFriends.length === 0 ? <div className="py-4 opacity-20 text-xs font-black uppercase w-full text-center">No friends online</div> : (
+                  filteredFriends.map((f) => (
+                    <div key={f._id} className="snap-start shrink-0 cursor-pointer" onClick={() => navigate(`/chat/${f._id}`)}>
+                      <div className="md:hidden flex flex-col items-center gap-1 w-20">
+                        <div className="size-16 rounded-2xl bg-base-200 border-b-4 border-base-300 p-1 overflow-hidden" dangerouslySetInnerHTML={{ __html: f.profilePic }} />
+                        <span className="text-[10px] font-black truncate w-full text-center uppercase opacity-60">{f.fullName.split(' ')[0]}</span>
+                      </div>
+                      <div className="hidden md:block w-80 hover:-translate-y-2 transition-all duration-300">
+                        <FriendCard friend={f} />
+                      </div>
                     </div>
-                    <div className="hidden md:block w-80 hover:-translate-y-1 transition-transform">
-                      <FriendCard friend={f} />
-                    </div>
-                  </div>
-                ))
-              )}
+                  ))
+                )}
+            </div>
           </div>
         </section>
 
         {/* DISCOVERY SECTION */}
-        <section className="mt-10 md:mt-20 space-y-12">
+        <section className="mt-10 md:mt-20 space-y-12 relative z-10">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
             <h2 className="text-3xl md:text-5xl font-[1000] uppercase italic tracking-tighter">Explore <span className="text-primary">New</span></h2>
             <div className="flex gap-2 w-full md:max-w-xl">
-              <div className="relative flex-1">
-                <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 size-5 opacity-20" />
+              <div className="relative flex-1 group">
+                <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 size-5 opacity-20 group-focus-within:text-primary transition-colors" />
                 <input
                   type="text" placeholder="Search by name or bio..." value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="input w-full pl-12 bg-base-200 border-none rounded-3xl font-bold h-14"
+                  className="input w-full pl-12 bg-base-200 border-none rounded-3xl font-bold h-14 outline-none focus:ring-4 ring-primary/10 transition-all"
                 />
               </div>
               <div className="dropdown dropdown-end">
-                <button tabIndex={0} className="btn h-14 bg-base-200 border-none rounded-3xl px-5">
-                  <Filter size={20} className={selectedLanguage !== "All" ? "text-primary" : "opacity-30"} />
+                <button tabIndex={0} className="btn h-14 bg-base-200 border-none rounded-3xl px-5 hover:bg-primary hover:text-white transition-colors">
+                  <Filter size={20} className={selectedLanguage !== "All" ? "text-white" : "opacity-30"} />
                 </button>
-                <ul tabIndex={0} className="dropdown-content z-[20] menu p-2 shadow-2xl bg-base-100 border-2 border-base-300 rounded-2xl w-52 mt-2 font-black uppercase text-xs">
+                <ul tabIndex={0} className="dropdown-content z-[30] menu p-2 shadow-2xl bg-base-100 border-2 border-base-300 rounded-2xl w-52 mt-2 font-black uppercase text-xs">
                   {availableLanguages.map(lang => (
                     <li key={lang}><button onClick={() => setSelectedLanguage(lang)} className={selectedLanguage === lang ? "bg-primary text-white" : ""}>{lang}</button></li>
                   ))}
@@ -263,16 +266,13 @@ const HomePage = () => {
               filteredUsers.length === 0 ? (
                 <div className="col-span-full text-center py-20 opacity-20 font-black text-3xl italic">NO LEARNERS FOUND</div>
               ) : (
-                filteredUsers.map((user, index) => {
+                filteredUsers.map((user) => {
                   const hasSent = outgoingRequestsids.has(user._id);
                   const incomingId = incomingRequestMap.get(user._id);
                   return (
                     <div key={user._id} className="relative group flex flex-col h-full">
-                      <div className="absolute inset-0 bg-base-200 rounded-[2.5rem] translate-y-2 group-hover:translate-y-3 transition-transform" />
-
-                      <div className="relative h-full bg-base-100 border-2 border-base-200 p-6 md:p-8 rounded-[2.5rem] flex flex-col gap-6 group-hover:-translate-y-1 transition-transform">
-
-                        {/* HEADER: AVATAR & INFO */}
+                      <div className="absolute inset-0 bg-base-200 rounded-[2.5rem] translate-y-2 group-hover:translate-y-4 transition-all" />
+                      <div className="relative h-full bg-base-100 border-2 border-base-200 p-6 md:p-8 rounded-[2.5rem] flex flex-col gap-6 group-hover:-translate-y-1.5 transition-all duration-300">
                         <div className="flex items-center gap-5">
                           <div className="size-20 md:size-24 rounded-[2rem] bg-base-200 p-1 border-b-4 border-base-300 overflow-hidden shrink-0"
                             dangerouslySetInnerHTML={{ __html: user.profilePic }} />
@@ -283,13 +283,7 @@ const HomePage = () => {
                             </div>
                           </div>
                         </div>
-
-                        {/* BIO */}
-                        <p className="text-sm font-medium opacity-60 italic line-clamp-2 h-10 leading-relaxed">
-                          "{user.bio || "Searching for a study squad partner..."}"
-                        </p>
-
-                        {/* LANGUAGES SECTION */}
+                        <p className="text-sm font-medium opacity-60 italic line-clamp-2 h-10 leading-relaxed">"{user.bio || "Searching for a study squad partner..."}"</p>
                         <div className="grid grid-cols-2 gap-3">
                           <div className="bg-base-200/50 rounded-2xl p-3 flex flex-col items-center justify-center gap-1 border border-base-200">
                             <span className="text-[8px] font-black opacity-30 uppercase tracking-tighter">Native</span>
@@ -306,21 +300,21 @@ const HomePage = () => {
                             </div>
                           </div>
                         </div>
-
-                        {/* ACTION BUTTON */}
                         <div className="mt-auto">
                           {incomingId ? (
-                            <button onClick={() => acceptRequestMutation(incomingId)} className="w-full py-4 bg-success text-success-content rounded-2xl font-[1000] uppercase text-xs shadow-[0_5px_0_0_#1d7a3a] active:shadow-none active:translate-y-1 transition-all">
-                              Accept Request
+                            <button onClick={() => acceptRequestMutation(incomingId)} className="group relative w-full active:translate-y-1 transition-all">
+                              <div className="absolute inset-0 bg-[#1d7a3a] rounded-2xl translate-y-1.5" />
+                              <div className="relative py-4 bg-success text-success-content border-2 border-success rounded-2xl font-[1000] uppercase text-xs flex items-center justify-center gap-2 group-hover:-translate-y-0.5 transition-all">
+                                Accept Request <Check size={14} strokeWidth={3} />
+                              </div>
                             </button>
                           ) : (
-                            <button
-                              disabled={hasSent || isPending}
-                              onClick={() => sendRequestMutation(user._id)}
-                              className={`w-full py-4 rounded-2xl font-[1000] uppercase text-xs transition-all flex items-center justify-center gap-2 ${hasSent ? 'bg-base-200 text-base-content/30' : 'bg-primary text-primary-content shadow-[0_5px_0_0_#4aab02] active:shadow-none active:translate-y-1'}`}
-                            >
-                              {hasSent ? "Invitation Sent" : "Connect Now"}
-                              {!hasSent && <Languages size={14} />}
+                            <button disabled={hasSent || isPending} onClick={() => sendRequestMutation(user._id)} className="group relative w-full active:translate-y-1 transition-all">
+                              <div className={`absolute inset-0 rounded-2xl translate-y-1.5 ${hasSent ? 'bg-base-300' : 'bg-[#4aab02]'}`} />
+                              <div className={`relative py-4 rounded-2xl font-[1000] uppercase text-xs flex items-center justify-center gap-2 border-2 transition-all ${hasSent ? 'bg-base-200 text-base-content/30 border-base-300' : 'bg-primary text-primary-content border-primary group-hover:-translate-y-0.5'}`}>
+                                {hasSent ? "Invitation Sent" : "Connect Now"}
+                                {!hasSent && <Languages size={14} strokeWidth={3} />}
+                              </div>
                             </button>
                           )}
                         </div>
@@ -338,7 +332,7 @@ const HomePage = () => {
         __html: `
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .mask-fade-edges { mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        body { background-image: radial-gradient(circle, #e5e7eb 1px, transparent 1px); background-size: 30px 30px; }
       `}} />
     </div>
   );
