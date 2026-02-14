@@ -24,6 +24,8 @@ const NotificationProvider = ({ children, isAuthenticated }) => {
   const lastSeenCountRef = useRef(parseInt(sessionStorage.getItem("lastToastCount") || "0"));
   const lastFriendCountRef = useRef(0);
 
+  const isIgnoringNextUpdateRef = useRef(false);
+
   const { data: friendRequests } = useQuery({
     queryKey: ["friendRequests"],
     queryFn: getFriendsRequests,
@@ -38,6 +40,14 @@ const NotificationProvider = ({ children, isAuthenticated }) => {
   });
 
   const pendingCount = friendRequests?.incomingReqs?.length || 0;
+
+  useEffect(() => {
+    window.ignoreNextFriendToast = () => {
+      isIgnoringNextUpdateRef.current = true;
+      // Safety timeout to reset the lock if something fails
+      setTimeout(() => { isIgnoringNextUpdateRef.current = false; }, 3000);
+    };
+  }, []);
 
   useEffect(() => {
     if (isAuthenticated && pendingCount > lastSeenCountRef.current) {
@@ -69,10 +79,9 @@ const NotificationProvider = ({ children, isAuthenticated }) => {
       return;
     }
 
-    const isAcceptingLocally = queryClient.isMutating({ mutationKey: ["acceptRequest"] }) > 0;
+    const friendListGrew = friends.length > lastFriendCountRef.current;
 
-    // Show toast if friends increased 
-    if (friends.length > lastFriendCountRef.current && !isAcceptingLocally) {
+    if (friendListGrew && !isIgnoringNextUpdateRef.current) {
       const newFriend = friends[friends.length - 1];
       toast.custom((t) => (
         <div className="relative animate-in zoom-in-95">
@@ -81,9 +90,9 @@ const NotificationProvider = ({ children, isAuthenticated }) => {
             <div className="size-10 bg-success rounded-full flex items-center justify-center text-white shrink-0">
               <Check size={20} strokeWidth={4} />
             </div>
-            <div className="flex-1">
-              <p className="font-black text-success uppercase text-[10px] tracking-widest leading-none mb-1">Invitation Accepted</p>
-              <p className="font-bold text-sm">{newFriend?.fullName} accepted your request!</p>
+            <div className="flex-1 text-left">
+              <p className="font-black text-success uppercase text-[10px] tracking-widest leading-none mb-1">New Partner</p>
+              <p className="font-bold text-sm">You are now friends with {newFriend?.fullName}!</p>
             </div>
             <button onClick={() => toast.dismiss(t)} className="btn btn-ghost btn-xs btn-circle opacity-40"><X size={14} /></button>
           </div>
@@ -92,7 +101,8 @@ const NotificationProvider = ({ children, isAuthenticated }) => {
     }
 
     lastFriendCountRef.current = friends.length;
-  }, [friends, isAuthenticated, queryClient]);
+    isIgnoringNextUpdateRef.current = false;
+  }, [friends, isAuthenticated]);
 
   return children;
 };

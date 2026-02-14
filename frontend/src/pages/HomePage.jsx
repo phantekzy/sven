@@ -32,7 +32,6 @@ const HomePage = () => {
 
   const pendingCount = friendRequests?.incomingReqs?.length || 0;
 
-  //  MUTATIONS 
   const { mutate: sendRequestMutation, isPending } = useMutation({
     mutationFn: sendFriendRequest,
     onSuccess: (data, variables) => {
@@ -56,27 +55,42 @@ const HomePage = () => {
   });
 
   const { mutate: acceptRequestMutation } = useMutation({
-    mutationKey: ["acceptRequest"],
     mutationFn: acceptFriendRequest,
-    onSuccess: () => {
+    onMutate: async (variables) => {
+      if (window.ignoreNextFriendToast) window.ignoreNextFriendToast();
+      const request = friendRequests?.incomingReqs?.find(r => r._id === variables);
+      return { senderName: request?.sender?.fullName };
+    },
+    onSuccess: (data, variables, context) => {
+      toast.dismiss();
       queryClient.invalidateQueries({ queryKey: ["friendRequests"] });
       queryClient.invalidateQueries({ queryKey: ["friends"] });
       queryClient.invalidateQueries({ queryKey: ["users"] });
-      toast.dismiss();
+      toast.custom((t) => (
+        <div className="relative animate-in zoom-in-95">
+          <div className="absolute inset-0 bg-success rounded-2xl translate-y-1.5 translate-x-1" />
+          <div className="relative bg-base-100 border-2 border-success p-4 rounded-2xl flex items-center gap-4 min-w-[320px]">
+            <div className="size-10 bg-success rounded-full flex items-center justify-center text-white shrink-0">
+              <Check size={20} strokeWidth={4} />
+            </div>
+            <div className="flex-1 text-left">
+              <p className="font-black text-success uppercase text-[10px] tracking-widest leading-none mb-1">Squad Updated!</p>
+              <p className="font-bold text-sm">You are now friends with {context?.senderName || "your partner"}!</p>
+            </div>
+          </div>
+        </div>
+      ), { duration: 3000 });
     }
   });
 
   const { mutate: declineRequestMutation } = useMutation({
-    mutationKey: ["rejectRequest"],
     mutationFn: rejectFriendRequest,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["friendRequests"] });
-      queryClient.invalidateQueries({ queryKey: ["friends"] });
       toast.dismiss();
     }
   });
 
-  // INTERACTIVE TOAST FOR INCOMING 
   useEffect(() => {
     const incoming = friendRequests?.incomingReqs || [];
     if (prevIncomingCount.current !== null && incoming.length > prevIncomingCount.current) {
@@ -104,7 +118,6 @@ const HomePage = () => {
     prevIncomingCount.current = incoming.length;
   }, [friendRequests]);
 
-  // FILTER LOGIC 
   const filteredFriends = useMemo(() => friends.filter(f => f.fullName.toLowerCase().includes(friendSearchQuery.toLowerCase())), [friends, friendSearchQuery]);
   const filteredUsers = useMemo(() => recommendedUsers.filter((user) => {
     const matchesSearch = user.fullName.toLowerCase().includes(searchQuery.toLowerCase()) || user.bio?.toLowerCase().includes(searchQuery.toLowerCase());
@@ -116,14 +129,6 @@ const HomePage = () => {
     const langs = new Set(recommendedUsers.map(u => u.nativeLanguage));
     return ["All", ...Array.from(langs)];
   }, [recommendedUsers]);
-
-  const scroll = (direction) => {
-    if (scrollRef.current) {
-      const { scrollLeft, clientWidth } = scrollRef.current;
-      const scrollTo = direction === 'left' ? scrollLeft - (clientWidth * 0.8) : scrollLeft + (clientWidth * 0.8);
-      scrollRef.current.scrollTo({ left: scrollTo, behavior: 'smooth' });
-    }
-  };
 
   const incomingRequestMap = useMemo(() => {
     const map = new Map();
@@ -138,6 +143,14 @@ const HomePage = () => {
       setOutgoingRequestsIds(outgoingIds);
     }
   }, [outgoingFriendReqs]);
+
+  const scroll = (direction) => {
+    if (scrollRef.current) {
+      const { scrollLeft, clientWidth } = scrollRef.current;
+      const scrollTo = direction === 'left' ? scrollLeft - (clientWidth * 0.8) : scrollLeft + (clientWidth * 0.8);
+      scrollRef.current.scrollTo({ left: scrollTo, behavior: 'smooth' });
+    }
+  };
 
   return (
     <div className="relative min-h-screen w-full overflow-x-hidden bg-base-100 p-4 md:p-10 pb-32">
@@ -162,13 +175,12 @@ const HomePage = () => {
           </Link>
         </header>
 
-        {/* ACTIVE PARTNERS SECTION */}
         <section className="space-y-6">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 px-1">
             <div className="space-y-4">
               <h2 className="text-2xl font-black flex items-center gap-3">
                 <div className="size-4 bg-success rounded-full animate-pulse" />
-                Active Partners
+                Your Friends
               </h2>
               <div className="relative w-full md:w-72 group">
                 <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 size-4 opacity-30" />
@@ -190,7 +202,6 @@ const HomePage = () => {
           <div ref={scrollRef} className="flex gap-8 overflow-x-auto py-4 px-1 scrollbar-hide snap-x snap-mandatory mask-fade-edges" style={{ scrollbarWidth: 'none' }}>
             {loadingFriends ? <div className="loading loading-lg" /> :
               friendSearchQuery !== "" && filteredFriends.length === 0 ? (
-                /* ALERT FOR FRIENDS NOT FOUND */
                 <div className="w-full flex flex-col items-center justify-center p-10 bg-base-200/50 rounded-3xl border-2 border-dashed border-base-300">
                   <Search size={32} className="opacity-20 mb-2" />
                   <p className="font-bold opacity-40">No partner matches "{friendSearchQuery}"</p>
@@ -205,7 +216,6 @@ const HomePage = () => {
           </div>
         </section>
 
-        {/* DISCOVERY SECTION */}
         <section className="space-y-12">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
             <h2 className="text-4xl font-black uppercase italic tracking-tight">Expand Your World</h2>
@@ -237,11 +247,9 @@ const HomePage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16">
             {loadingUsers ? <div className="col-span-full flex justify-center py-20"><span className="loading loading-lg text-primary"></span></div> :
               (searchQuery !== "" || selectedLanguage !== "All") && filteredUsers.length === 0 ? (
-                /* ALERT FOR EXPLORE NOT FOUND */
                 <div className="col-span-full flex flex-col items-center justify-center py-20 bg-base-200/30 rounded-[3rem] border-2 border-dashed border-base-300 animate-in fade-in zoom-in-95">
                   <SearchX size={64} className="text-primary/20 mb-4" />
                   <h3 className="text-2xl font-black opacity-60">No users found</h3>
-                  <p className="font-bold opacity-30">Try adjusting your search or language filter</p>
                   <button onClick={() => { setSearchQuery(""); setSelectedLanguage("All"); }} className="mt-4 btn btn-sm btn-ghost font-black uppercase tracking-widest text-[10px]">Reset Filters</button>
                 </div>
               ) : (
@@ -251,7 +259,7 @@ const HomePage = () => {
                   return (
                     <div key={user._id} className="group relative" style={{ animation: `cardFloat 5s ease-in-out infinite`, animationDelay: `${index * 0.3}s` }}>
                       <div className="absolute inset-0 bg-base-300 rounded-[3rem] translate-y-3" />
-                      <div className="relative bg-base-100 border-2 border-base-300 rounded-[3rem] p-8 space-y-6 overflow-hidden">
+                      <div className="relative bg-base-100 border-2 border-base-300 rounded-[3rem] p-8 space-y-6 overflow-hidden flex flex-col h-full">
                         <div className="flex flex-col items-center gap-4">
                           <div className="size-28 rounded-[2.2rem] bg-base-200 p-1 border-b-8 border-base-300">
                             <div className="w-full h-full rounded-[1.8rem] overflow-hidden" dangerouslySetInnerHTML={{ __html: user?.profilePic }} />
@@ -262,6 +270,12 @@ const HomePage = () => {
                               <MapPinIcon className="size-3" /> {user.location || "Online"}
                             </span>
                           </div>
+                        </div>
+
+                        <div className="flex-1 text-center px-2">
+                          <p className="text-sm font-medium opacity-60 italic line-clamp-2 min-h-[2.5rem]">
+                            {user.bio || "No bio yet..."}
+                          </p>
                         </div>
 
                         <div className="flex items-center justify-between p-4 bg-base-200/50 rounded-3xl border-2 border-dashed border-base-300">
@@ -310,6 +324,12 @@ const HomePage = () => {
         @keyframes float { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-30px) rotate(5deg); } }
         @keyframes cardFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
         @keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .line-clamp-2 {
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;  
+          overflow: hidden;
+        }
       `}} />
     </div>
   );
