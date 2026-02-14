@@ -1,31 +1,38 @@
 import { Link, useLocation, useNavigate } from "react-router";
+import { useState, useEffect, useRef } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import useAuthUser from "../hooks/useAuthUser";
+import useLogout from "../hooks/useLogout";
+import ThemeSelector from "./ThemeSelector";
 import {
   BellIcon,
   LogOutIcon,
-  ShipWheelIcon,
-  PartyPopperIcon,
-  XIcon,
   HomeIcon,
   ChevronLeft,
-  UsersIcon
+  UsersIcon,
+  XIcon,
+  PartyPopperIcon,
+  Trash2Icon,
+  SettingsIcon,
 } from "lucide-react";
-import ThemeSelector from "./ThemeSelector";
-import useLogout from "../hooks/useLogout";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getFriendsRequests, acceptFriendRequest, rejectFriendRequest } from "../lib/api";
-import { useState, useEffect, useRef } from "react";
+import {
+  getFriendsRequests,
+  acceptFriendRequest,
+  rejectFriendRequest,
+  deleteNotification
+} from "../lib/api";
 
 const Navbar = () => {
   const { authUser } = useAuthUser();
   const location = useLocation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const isChatPage = location.pathname?.startsWith("/chat");
   const { logoutMutation } = useLogout();
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
+
+  const isActive = (path) => location.pathname === path;
 
   const { data: friendRequests } = useQuery({
     queryKey: ["friendRequests"],
@@ -35,94 +42,80 @@ const Navbar = () => {
   const totalNotifications = (friendRequests?.incomingReqs?.length || 0) +
     (friendRequests?.acceptedReqs?.length || 0);
 
-  const closeMenus = () => {
-    const drawer = document.getElementById("mobile-drawer");
-    if (drawer) drawer.checked = false;
-    setIsDropdownOpen(false);
+  //  MUTATIONS 
+  const { mutate: deleteNotificationMutation } = useMutation({
+    mutationFn: deleteNotification,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["friendRequests"] }),
+  });
+
+  const handleClearAll = () => {
+    friendRequests?.acceptedReqs?.forEach((req) => deleteNotificationMutation(req._id));
   };
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsDropdownOpen(false);
-      }
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) setIsDropdownOpen(false);
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const { mutate: acceptReq } = useMutation({
-    mutationFn: acceptFriendRequest,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["friendRequests"] });
-      queryClient.invalidateQueries({ queryKey: ["friends"] });
-      closeMenus();
-    },
-  });
-
-  const { mutate: rejectReq } = useMutation({
-    mutationFn: rejectFriendRequest,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["friendRequests"] });
-      closeMenus();
-    },
-  });
-
   const NotificationContent = () => (
-    <div className="flex flex-col h-full overflow-hidden bg-base-100">
-      <div className="p-4 border-b border-base-300 flex justify-between items-center bg-base-200/50">
-        <h3 className="font-bold text-sm tracking-tight text-base-content">Activity Feed ({totalNotifications})</h3>
-        <label htmlFor="mobile-drawer" className="sm:hidden btn btn-ghost btn-xs btn-circle">
-          <XIcon className="size-4" />
-        </label>
+    <div className="flex flex-col h-full max-h-[500px] w-full bg-base-100 shadow-2xl overflow-hidden rounded-2xl border border-base-300">
+      {/* HEADER */}
+      <div className="px-5 py-4 bg-base-200/50 border-b border-base-300 flex justify-between items-center">
+        <div>
+          <h3 className="text-sm font-black uppercase tracking-wider text-base-content/80">Activity</h3>
+          <p className="text-[10px] font-bold text-primary">{totalNotifications} Updates</p>
+        </div>
+        <div className="flex gap-2">
+          {friendRequests?.acceptedReqs?.length > 0 && (
+            <button onClick={handleClearAll} className="btn btn-ghost btn-xs text-error hover:bg-error/10 gap-1 px-2 uppercase text-[10px] font-bold">
+              <Trash2Icon size={12} /> Clear
+            </button>
+          )}
+        </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto max-h-[450px]">
+      {/* BODY */}
+      <div className="overflow-y-auto custom-scrollbar">
         {totalNotifications === 0 ? (
-          <div className="p-12 text-center opacity-40">
-            <BellIcon className="size-10 mx-auto mb-2" />
-            <p className="text-sm font-medium italic">All caught up!</p>
+          <div className="py-16 text-center">
+            <BellIcon className="size-12 mx-auto opacity-10 mb-3" />
+            <p className="text-xs font-bold opacity-40 uppercase tracking-widest">Everything Read</p>
           </div>
         ) : (
-          <div className="flex flex-col">
+          <div className="divide-y divide-base-200">
+            {/* INCOMING */}
             {friendRequests?.incomingReqs?.map((req) => (
-              <div key={req._id} className="p-4 hover:bg-base-200/50 transition-colors border-b border-base-200 last:border-0">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="avatar">
-                    <div className="w-10 h-10 rounded-full bg-base-300 overflow-hidden"
-                      dangerouslySetInnerHTML={{ __html: req.sender?.profilePic }}
-                    />
-                  </div>
+              <div key={req._id} className="p-4 bg-primary/5 hover:bg-primary/10 transition-colors">
+                <div className="flex items-center gap-3">
+                  <div className="size-10 rounded-full border-2 border-primary/20 overflow-hidden bg-base-300"
+                    dangerouslySetInnerHTML={{ __html: req.sender?.profilePic }} />
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-bold truncate text-base-content">{req.sender?.fullName}</p>
-                    <p className="text-[10px] text-primary font-bold uppercase tracking-widest">New Invitation</p>
+                    <p className="text-xs font-black truncate">{req.sender?.fullName}</p>
+                    <p className="text-[9px] font-bold text-primary uppercase">Friend Request</p>
                   </div>
-                </div>
-                <div className="flex gap-2">
-                  <button onClick={() => rejectReq(req._id)} className="btn btn-ghost btn-xs flex-1 text-error border border-error/10">Decline</button>
-                  <button onClick={() => acceptReq(req._id)} className="btn btn-primary btn-xs flex-1 shadow-sm">Accept</button>
+                  <div className="flex gap-1">
+                    <button onClick={() => acceptFriendRequest(req._id)} className="btn btn-primary btn-xs btn-square"><PartyPopperIcon size={14} /></button>
+                  </div>
                 </div>
               </div>
             ))}
 
+            {/* ACCEPTED */}
             {friendRequests?.acceptedReqs?.map((req) => (
-              <div key={req._id} className="p-4 border-b border-base-200 last:border-0 bg-gradient-to-r from-success/5 to-transparent relative overflow-hidden">
-                <div className="absolute left-0 top-0 h-full w-1 bg-success"></div>
+              <div key={req._id} className="p-4 hover:bg-base-200 transition-colors group relative">
                 <div className="flex items-center gap-3">
-                  <div className="avatar">
-                    <div className="w-10 h-10 rounded-full bg-base-300 shadow-sm overflow-hidden">
-                      <div className="w-full h-full" dangerouslySetInnerHTML={{ __html: req.recipient?.profilePic }} />
-                    </div>
-                  </div>
+                  <div className="size-10 rounded-full border-2 border-success/20 overflow-hidden bg-base-300"
+                    dangerouslySetInnerHTML={{ __html: req.recipient?.profilePic }} />
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-bold truncate text-base-content">{req.recipient?.fullName}</p>
-                    <div className="flex items-center gap-1.5 mt-0.5">
-                      <div className="p-0.5 rounded-full bg-success/20">
-                        <PartyPopperIcon className="size-3 text-success" />
-                      </div>
-                      <span className="text-[11px] font-semibold text-success/80">Connection established</span>
-                    </div>
+                    <p className="text-xs font-bold truncate">{req.recipient?.fullName}</p>
+                    <p className="text-[9px] font-bold text-success uppercase">New Connection</p>
                   </div>
+                  <button onClick={() => deleteNotificationMutation(req._id)} className="opacity-0 group-hover:opacity-100 transition-opacity p-1 text-error">
+                    <XIcon size={14} />
+                  </button>
                 </div>
               </div>
             ))}
@@ -130,106 +123,82 @@ const Navbar = () => {
         )}
       </div>
 
-      <Link
-        to="/notifications"
-        onClick={closeMenus}
-        className="p-3 text-center text-[11px] font-bold hover:bg-base-200 border-t border-base-300 block text-primary uppercase tracking-tighter"
-      >
-        View Full History
+      <Link to="/notifications" onClick={() => setIsDropdownOpen(false)} className="py-3 text-center text-[10px] font-black uppercase tracking-[0.2em] bg-base-200 hover:text-primary transition-colors border-t border-base-300">
+        View All History
       </Link>
     </div>
   );
 
   return (
-    <div className="drawer drawer-end z-50">
-      <input id="mobile-drawer" type="checkbox" className="drawer-toggle" />
-      <div className="drawer-content flex flex-col">
-        <nav className="bg-base-200 border-b border-base-300 sticky top-0 z-30 h-16 flex items-center">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-end w-full">
-              {isChatPage && (
-                <div className="flex-1">
-                  <Link to="/" className="flex items-center gap-2.5">
-                    <ShipWheelIcon className="size-9 text-primary" />
-                    <span className="text-3xl font-bold font-mono bg-clip-text text-transparent bg-gradient-to-tr from-primary to-secondary tracking-wider">Sven</span>
-                  </Link>
-                </div>
-              )}
+    <nav className="sticky top-0 z-50 w-full px-4 py-3">
+      <div className="max-w-7xl mx-auto flex items-center justify-between bg-base-100/90 backdrop-blur-md border border-base-300 shadow-lg rounded-[2rem] px-4 py-2">
 
-              <div className="flex items-center gap-3 sm:gap-4">
-                <button
-                  onClick={() => navigate(-1)}
-                  className="btn btn-ghost btn-circle"
-                >
-                  <ChevronLeft className="h-6 w-6 text-base-content opacity-70" />
-                </button>
+        {/* LEFT: NAV PILL */}
+        <div className="flex items-center bg-base-200/50 rounded-full p-1 border border-base-300/50">
+          <button onClick={() => navigate(-1)} className="btn btn-ghost btn-circle btn-sm">
+            <ChevronLeft size={20} />
+          </button>
+          <div className="w-[1px] h-4 bg-base-300 mx-1" />
+          <Link to="/" className={`btn btn-circle btn-sm border-none ${isActive("/") ? "bg-primary text-primary-content shadow-md" : "btn-ghost opacity-60"}`}>
+            <HomeIcon size={18} />
+          </Link>
+          <Link to="/friends" className={`btn btn-circle btn-sm border-none ${isActive("/friends") ? "bg-primary text-primary-content shadow-md" : "btn-ghost opacity-60"}`}>
+            <UsersIcon size={18} />
+          </Link>
+        </div>
 
-                <Link to="/" className="btn btn-ghost btn-circle">
-                  <HomeIcon className="h-6 w-6 text-base-content opacity-70" />
-                </Link>
+        {/* RIGHT: USER & UTILS */}
+        <div className="flex items-center gap-3">
+          <ThemeSelector />
 
-                {/* FRIENDS BUTTON */}
-                <Link to="/friends" className="btn btn-ghost btn-circle">
-                  <UsersIcon className="h-6 w-6 text-base-content opacity-70" />
-                </Link>
-
-                {/* DESKTOP DROPDOWN */}
-                <details
-                  ref={dropdownRef}
-                  className="hidden sm:block dropdown dropdown-end"
-                  open={isDropdownOpen}
-                >
-                  <summary
-                    className="btn btn-ghost btn-circle list-none"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setIsDropdownOpen(!isDropdownOpen);
-                    }}
-                  >
-                    <div className="relative">
-                      <BellIcon className="h-6 w-6 text-base-content opacity-70" />
-                      {totalNotifications > 0 && (
-                        <span className="badge badge-primary badge-sm absolute -top-2 -right-2 font-bold">
-                          {totalNotifications}
-                        </span>
-                      )}
-                    </div>
-                  </summary>
-                  <div className="dropdown-content z-[1] shadow-2xl bg-base-100 border border-base-300 rounded-box w-80 mt-2 overflow-hidden">
-                    <NotificationContent />
-                  </div>
-                </details>
-
-                <label htmlFor="mobile-drawer" className="sm:hidden btn btn-ghost btn-circle relative">
-                  <BellIcon className="h-6 w-6 text-base-content opacity-70" />
-                  {totalNotifications > 0 && <span className="badge badge-primary badge-sm absolute top-1 right-1 font-bold">{totalNotifications}</span>}
-                </label>
-
-                <ThemeSelector />
-
-                <div className="avatar px-2">
-                  <div className="w-8 h-8 rounded-full ring-1 ring-base-300 ring-offset-base-100 ring-offset-2 overflow-hidden">
-                    <div className="w-full h-full" dangerouslySetInnerHTML={{ __html: authUser?.profilePic }} />
-                  </div>
-                </div>
-
-                <button className="btn btn-ghost btn-circle" onClick={() => logoutMutation()}>
-                  <LogOutIcon className="h-6 w-6 text-base-content opacity-70" />
-                </button>
+          {/* NOTIFICATION DROPZONE */}
+          <div className="relative" ref={dropdownRef}>
+            <button
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              className={`btn btn-circle btn-sm md:btn-md border-none transition-all ${isDropdownOpen ? "bg-primary text-primary-content" : "bg-base-200 hover:bg-base-300"}`}
+            >
+              <div className="relative">
+                <BellIcon size={20} />
+                {totalNotifications > 0 && (
+                  <span className="absolute -top-2 -right-2 size-5 bg-primary text-primary-content text-[10px] font-black rounded-full flex items-center justify-center border-2 border-base-100">
+                    {totalNotifications}
+                  </span>
+                )}
               </div>
-            </div>
-          </div>
-        </nav>
-      </div>
+            </button>
 
-      <div className="drawer-side sm:hidden">
-        <label htmlFor="mobile-drawer" className="drawer-overlay"></label>
-        <div className="min-h-full w-80 bg-base-100 shadow-xl border-l border-base-300">
-          <NotificationContent />
+            {/* THE NOTIFICATION LAYER */}
+            {isDropdownOpen && (
+              <div className="absolute top-14 right-0 w-80 md:w-96 animate-in fade-in slide-in-from-top-2 duration-200 z-[100]">
+                <NotificationContent />
+              </div>
+            )}
+          </div>
+
+          <div className="w-[1px] h-6 bg-base-300 mx-1 hidden sm:block" />
+
+          {/* PROFILE BUTTON */}
+          <div className="flex items-center gap-2 pl-1">
+            <div className="avatar">
+              <div className="size-8 md:size-10 rounded-2xl ring-2 ring-base-300 ring-offset-2 ring-offset-base-100 overflow-hidden shadow-inner bg-base-200"
+                dangerouslySetInnerHTML={{ __html: authUser?.profilePic }} />
+            </div>
+            <button onClick={() => logoutMutation()} className="btn btn-ghost btn-circle btn-sm text-error/60 hover:text-error hover:bg-error/10">
+              <LogOutIcon size={18} />
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+
+      <style dangerouslySetInnerHTML={{
+        __html: `
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #8883; border-radius: 10px; }
+      `}} />
+    </nav>
   );
 };
 
 export default Navbar;
+//dsadas
