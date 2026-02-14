@@ -3,6 +3,7 @@ import { Toaster, toast } from "sonner";
 import { useEffect, useRef } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getFriendsRequests, getUserFriends } from "./lib/api";
+import { Check, X } from "lucide-react";
 
 import HomePage from "./pages/HomePage.jsx";
 import SignUpPage from "./pages/SignUpPage.jsx";
@@ -23,7 +24,6 @@ const NotificationProvider = ({ children, isAuthenticated }) => {
   const lastSeenCountRef = useRef(parseInt(sessionStorage.getItem("lastToastCount") || "0"));
   const lastFriendCountRef = useRef(0);
 
-  // Monitor Incoming Requests
   const { data: friendRequests } = useQuery({
     queryKey: ["friendRequests"],
     queryFn: getFriendsRequests,
@@ -31,7 +31,6 @@ const NotificationProvider = ({ children, isAuthenticated }) => {
     refetchInterval: 8000,
   });
 
-  // Monitor Friends List (for "Accepted" popups)
   const { data: friends = [] } = useQuery({
     queryKey: ["friends"],
     queryFn: getUserFriends,
@@ -40,58 +39,58 @@ const NotificationProvider = ({ children, isAuthenticated }) => {
 
   const pendingCount = friendRequests?.incomingReqs?.length || 0;
 
-  // Effect: Received Invitation
   useEffect(() => {
-    if (isAuthenticated && pendingCount > 0 && pendingCount > lastSeenCountRef.current) {
+    if (isAuthenticated && pendingCount > lastSeenCountRef.current) {
       const latestSender = friendRequests?.incomingReqs?.[0]?.sender;
-      if (latestSender) {
+      if (latestSender && window.location.pathname !== "/") {
         toast.custom((t) => (
-          <div className="alert bg-base-100 border-primary border shadow-2xl flex justify-between items-center gap-4 min-w-[320px] p-4 animate-in fade-in slide-in-from-top-4">
-            <div className="flex items-center gap-3">
-              <div className="avatar">
-                <div className="size-10 rounded-full border border-primary/20 overflow-hidden bg-base-300"
-                  dangerouslySetInnerHTML={{ __html: latestSender.profilePic }} />
+          <div className="relative group animate-in slide-in-from-top-5">
+            <div className="absolute inset-0 bg-primary rounded-2xl translate-y-1.5 translate-x-1" />
+            <div className="relative bg-base-100 border-2 border-primary p-4 rounded-2xl flex items-center gap-4 min-w-[320px]">
+              <div className="size-12 rounded-xl bg-base-200 border-b-4 border-base-300 overflow-hidden"
+                dangerouslySetInnerHTML={{ __html: latestSender.profilePic }} />
+              <div className="flex-1">
+                <p className="font-black text-primary uppercase text-[10px] tracking-widest leading-none mb-1">New Invite</p>
+                <p className="font-bold text-sm">{latestSender.fullName} sent a request</p>
               </div>
-              <div>
-                <p className="font-bold text-sm text-primary">Invitation Received</p>
-                <p className="text-xs opacity-70">{latestSender.fullName} wants to connect</p>
-              </div>
+              <button onClick={() => { toast.dismiss(t); window.location.href = "/notifications" }} className="btn bg-primary text-primary-content border-none btn-sm rounded-xl font-black uppercase text-[10px]">View</button>
             </div>
-            <button onClick={() => { toast.dismiss(t); window.location.href = "/notifications" }} className="btn btn-primary btn-xs">View</button>
           </div>
         ));
-        lastSeenCountRef.current = pendingCount;
-        sessionStorage.setItem("lastToastCount", pendingCount.toString());
       }
-    } else {
-      lastSeenCountRef.current = pendingCount;
-      sessionStorage.setItem("lastToastCount", pendingCount.toString());
     }
+    lastSeenCountRef.current = pendingCount;
+    sessionStorage.setItem("lastToastCount", pendingCount.toString());
   }, [pendingCount, friendRequests, isAuthenticated]);
 
-  // Effect: Someone Accepted your Request
   useEffect(() => {
-    if (isAuthenticated && friends.length > lastFriendCountRef.current && lastFriendCountRef.current !== 0) {
-      const isMutating = queryClient.isMutating({ mutationKey: ["acceptRequest"] });
-      if (!isMutating) {
-        const newFriend = friends[friends.length - 1];
-        toast.custom((t) => (
-          <div className="alert bg-base-100 border-success border shadow-2xl flex justify-between items-center gap-4 min-w-[320px] p-4">
-            <div className="flex items-center gap-3">
-              <div className="avatar">
-                <div className="size-10 rounded-full border border-success/20 overflow-hidden bg-base-300"
-                  dangerouslySetInnerHTML={{ __html: newFriend?.profilePic }} />
-              </div>
-              <div>
-                <p className="font-bold text-sm text-success">Invitation Accepted</p>
-                <p className="text-xs opacity-70">{newFriend?.fullName} accepted your request!</p>
-              </div>
-            </div>
-            <button onClick={() => toast.dismiss(t)} className="btn btn-ghost btn-xs">Great</button>
-          </div>
-        ));
-      }
+    if (!isAuthenticated || lastFriendCountRef.current === 0) {
+      lastFriendCountRef.current = friends.length;
+      return;
     }
+
+    const isAcceptingLocally = queryClient.isMutating({ mutationKey: ["acceptRequest"] }) > 0;
+
+    // Show toast if friends increased 
+    if (friends.length > lastFriendCountRef.current && !isAcceptingLocally) {
+      const newFriend = friends[friends.length - 1];
+      toast.custom((t) => (
+        <div className="relative animate-in zoom-in-95">
+          <div className="absolute inset-0 bg-success rounded-2xl translate-y-1.5 translate-x-1" />
+          <div className="relative bg-base-100 border-2 border-success p-4 rounded-2xl flex items-center gap-4 min-w-[320px]">
+            <div className="size-10 bg-success rounded-full flex items-center justify-center text-white shrink-0">
+              <Check size={20} strokeWidth={4} />
+            </div>
+            <div className="flex-1">
+              <p className="font-black text-success uppercase text-[10px] tracking-widest leading-none mb-1">Invitation Accepted</p>
+              <p className="font-bold text-sm">{newFriend?.fullName} accepted your request!</p>
+            </div>
+            <button onClick={() => toast.dismiss(t)} className="btn btn-ghost btn-xs btn-circle opacity-40"><X size={14} /></button>
+          </div>
+        </div>
+      ));
+    }
+
     lastFriendCountRef.current = friends.length;
   }, [friends, isAuthenticated, queryClient]);
 
