@@ -19,7 +19,8 @@ import {
   PaletteIcon,
   CheckCircle2,
   UserCheck,
-  BellRing
+  BellRing,
+  AlertCircle
 } from "lucide-react";
 import {
   getFriendsRequests,
@@ -38,11 +39,12 @@ const Navbar = () => {
 
   const [activeMobilePanel, setActiveMobilePanel] = useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false); // New state for Pro Alert
   const dropdownRef = useRef(null);
 
   const isActive = (path) => location.pathname === path;
 
-  // DATA SYNC (Updates every 5 seconds) 
+  // DATA SYNC (Updates every 3 seconds as requested) 
   const { data: friendRequests } = useQuery({
     queryKey: ["friendRequests"],
     queryFn: getFriendsRequests,
@@ -195,11 +197,50 @@ const Navbar = () => {
 
             <div className="flex items-center gap-1">
               <div className="size-10 rounded-2xl ring-2 ring-base-200 ring-offset-2 ring-offset-base-100 overflow-hidden bg-base-300" dangerouslySetInnerHTML={{ __html: authUser?.profilePic }} />
-              <button onClick={() => logoutMutation()} className="btn btn-ghost btn-circle btn-sm text-error/40 hover:text-error"><LogOutIcon size={18} /></button>
+              <button
+                onClick={() => setShowLogoutConfirm(true)}
+                className="btn btn-ghost btn-circle btn-sm text-error/40 hover:text-error"
+              >
+                <LogOutIcon size={18} />
+              </button>
             </div>
           </div>
         </div>
       </nav>
+
+      {/* LOGOUT ALERT MODAL */}
+      {showLogoutConfirm && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center px-4">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300" onClick={() => setShowLogoutConfirm(false)} />
+          <div className="relative bg-base-100 border-4 border-base-200 p-8 rounded-[3rem] shadow-2xl max-w-sm w-full animate-in zoom-in-95 duration-200">
+            <div className="flex flex-col items-center text-center">
+              <div className="size-16 rounded-3xl bg-error/10 text-error flex items-center justify-center mb-6">
+                <AlertCircle size={32} />
+              </div>
+              <h3 className="text-2xl font-black uppercase italic tracking-tighter mb-2">Disconnect?</h3>
+              <p className="text-xs font-bold opacity-50 uppercase tracking-widest mb-8">Are you sure you want to sign out of your session?</p>
+
+              <div className="flex flex-col w-full gap-3">
+                <button
+                  onClick={() => {
+                    logoutMutation();
+                    setShowLogoutConfirm(false);
+                  }}
+                  className="btn btn-error rounded-2xl font-black uppercase tracking-widest h-14"
+                >
+                  Yes, Disconnect
+                </button>
+                <button
+                  onClick={() => setShowLogoutConfirm(false)}
+                  className="btn btn-ghost rounded-2xl font-black uppercase tracking-widest h-14"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* MOBILE SLIDERS */}
       <div className={`fixed inset-0 z-[110] lg:hidden transition-all duration-500 ${activeMobilePanel ? "visible" : "invisible"}`}>
